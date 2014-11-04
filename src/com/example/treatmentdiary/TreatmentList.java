@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.R.menu;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,6 +30,10 @@ public class TreatmentList extends Activity
 	private DbHandlerDiary dbDiary;
 	private Treatment selectedTreatment;
 	private MenuItem item;
+	
+	
+	private TextView titleTV;
+	private ImageButton manageButton, addButton;
 
 
 	@Override
@@ -92,9 +99,36 @@ public class TreatmentList extends Activity
 	private void loadDiaryList()
 	{
 		setContentView(R.layout.diaries);
+		titleTV = (TextView)findViewById(R.id.textTitle);
+		titleTV.setText(selectedTreatment.getName());
+		
+		manageButton = (ImageButton)findViewById(R.id.menuManageButton);
+		addButton = (ImageButton)findViewById(R.id.menuAddButto);
+		manageButton.setOnClickListener(onClickListener);
+		addButton.setOnClickListener(onClickListener);
+		
 		fillDiaryListView();
 		registerDiaryClickCallback();
 	}
+	
+	private OnClickListener onClickListener = new OnClickListener() {
+		 @Override
+	     public void onClick(View v) 
+	     {
+	         switch(v.getId()){
+	             case R.id.menuManageButton:
+	            	 // Innstillinger
+	             break;
+	             case R.id.menuAddButto:
+	     			dbDiary.addDiary(new Diary(), selectedTreatment);
+	    			filldiaryList(selectedTreatment);
+	    			fillDiaryListView();
+	    			registerDiaryClickCallback();
+	             break;
+	         }
+	     }
+	};
+	
 
 	private void fillListView()
 	{

@@ -10,12 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 	public final static int CURRENTTREATMENTSRESULT = 1, USEDTREATMENTSRESULT = 2;
 	private Button treatmentsButton, usedTreatmentsButton;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

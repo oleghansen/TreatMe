@@ -10,14 +10,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.birthdaysms.TreatmentList" >
 
-    <TextView
-        android:id="@+id/textTitle"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/diaryListView"
-        android:background="#4E4E4E"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentTop="true"
+        android:background="#01DF74"
+        android:paddingTop="5dp"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/menuManageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@android:drawable/ic_menu_manage" />
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="238dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.85"
+            android:gravity="center_horizontal"
+            android:text="Treatment"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#fff" />
+
+        <ImageButton
+            android:id="@+id/menuAddButto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:src="@android:drawable/ic_menu_add" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/diaryListView"
