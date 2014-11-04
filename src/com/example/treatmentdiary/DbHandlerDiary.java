@@ -26,7 +26,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	static String KEY_TEXT="Text";
 	static String KEY_TIMEOFDAY="TimeOfDay";
 	static String KEY_RATE="Rating";
-	static int DATABASE_VERSION=103;
+	static int DATABASE_VERSION=111;
 	static String DATABASE_NAME="TreatmentDatabase";
 	private List<Diary> diaryList; 
 	
@@ -60,7 +60,8 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public	List<Diary> findDiaryNotes(Treatment treatment){
 		diaryList = new ArrayList<Diary>();
-		String selectQuery = "SELECT * FROM " + TABLE_DIARY;
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY _ID DESC";
+		System.out.println("Forsøker å finne note med treatmentId" + treatment.getId());
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery,null);
@@ -90,7 +91,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		
 	}
 
-	
+
 	public void addDiary(Diary diary, Treatment treatment){
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -100,6 +101,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		values.put(KEY_TEXT, diary.getDescription());
 		values.put(KEY_RATE, diary.getRate());
 		db.insert(TABLE_DIARY, null, values);
+		System.out.println("Legger inn note med TreatmentId" + treatment.getId());
 		db.close();
 	}
 	

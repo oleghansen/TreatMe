@@ -25,22 +25,29 @@ public class MainActivity extends Activity {
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
 		
+		Treatment hei = db.findTreatment(1);
 		if(db.findAllTreatments().isEmpty())
 		{
-			Treatment hei = new Treatment("Hodepine", "Paracet", "30-12-1992", "To uker");
+			
 			db.addTreatment(hei);
-			dbDiary.addDiary(new Diary("Dag1", "Paracet", "30-12-1992", "To uker", "hei", 5), hei);
-			dbDiary.addDiary(new Diary("Dag2", "Paracet", "30-12-1992", "To uker", "hei", 5), hei);
-			dbDiary.addDiary(new Diary("Dag3", "Paracet", "30-12-1992", "To uker", "hei", 5), hei);
-			dbDiary.addDiary(new Diary("Dag4", "Paracet", "30-12-1992", "To uker", "hei", 5), hei);
-			dbDiary.addDiary(new Diary("Dag5", "Paracet", "30-12-1992", "To uker", "hei", 5), hei);
 			db.addTreatment(new Treatment("HodeVondt", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("Hodedritt", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("Hodepikk", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("HodeMorn", "Paracet", "30-12-1992", "To uker"));
 		}
 
+		if(dbDiary.findDiaryNotes(hei).isEmpty())
+		{
+			System.out.println("TOM DIARY. LEGGER INN...");
+			dbDiary.addDiary(new Diary("Dag2", "Dag2", "30-12-1992", "To uker", "hei"), hei);
+			dbDiary.addDiary(new Diary("Dag3", "Dag3", "30-12-1992", "To uker", "hei"), hei);
+			dbDiary.addDiary(new Diary("Dag4", "Dag4", "30-12-1992", "To uker", "hei"), hei);
+			dbDiary.addDiary(new Diary("Dag5", "Dag5", "30-12-1992", "To uker", "hei"), hei);
+		}
+
 		
+
+
 		treatmentsButton = (Button)findViewById(R.id.currentTreatmentsButton);
 		usedTreatmentsButton = (Button)findViewById(R.id.usedTreatmentsButton);
 		

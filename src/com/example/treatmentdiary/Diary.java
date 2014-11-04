@@ -11,9 +11,8 @@ public class Diary {
 	
 	public Diary(){}
 	
-	public Diary(String t, String d, String tx, String tod, String r, int tid)
+	public Diary(String t, String d, String tx, String tod, String r)
 	{
-		treatmentid = tid;
 		title = t;
 		date = d;
 		text = tx;

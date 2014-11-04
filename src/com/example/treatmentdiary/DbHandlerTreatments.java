@@ -24,7 +24,7 @@ public class DbHandlerTreatments extends SQLiteOpenHelper
 	static String KEY_METHOD="Method";
 	static String KEY_STARTED="Started";
 	static String KEY_EXPECTEDTIME="ExpectedTime";
-	static int DATABASE_VERSION=103;
+	static int DATABASE_VERSION=111;
 	static String DATABASE_NAME="TreatmentDatabase";
 	private List<Treatment> treatmentList; 
 	
@@ -84,6 +84,26 @@ public class DbHandlerTreatments extends SQLiteOpenHelper
 		
 	}
 
+	public Treatment findTreatment(int id)
+	{
+		Treatment treatment = new Treatment();
+		String selectQuery = "SELECT * FROM " + TABLE_TREATMENT + " WHERE _ID = " + id + " ORDER BY _ID DESC";
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery,null);
+		
+		if (cursor.moveToFirst()) {
+				do{
+					treatment.setId(Integer.parseInt(cursor.getString(0)));
+					treatment.setName(cursor.getString(1));
+					treatment.setMethod(cursor.getString(2));
+					treatment.setStarted(cursor.getString(3));
+					treatment.setExpectedTime(cursor.getString(4));
+				}
+			while (cursor.moveToNext());
+		}
+		db.close();
+		return treatment;
+	}
 	
 	public void addTreatment(Treatment treatment){
 		SQLiteDatabase db = this.getWritableDatabase();
