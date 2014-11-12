@@ -1,12 +1,33 @@
 <resources>
-
+<color name="treatment_green">#01DF74</color>
+<color name="white_opaque">#FFFFFF</color>
+<color name="pitch_black">#FF000000</color>
     <!--
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- API 14 theme customizations can go here. -->
+    <style name="MyTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:textColor">@color/white_opaque</item>
     </style>
 
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/treatment_green</item>
+         <item name="android:titleTextStyle">@style/MyActionBar.TitleText</item>
+        
+    </style>
+    
+        <!-- ActionBar title text -->
+    <style name="MyActionBar.TitleText"
+           parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white_opaque</item>
+    </style>
+
+    <!-- ActionBar tabs text styles -->
+    <style name="MyActionBar.TabText"
+           parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/white_opaque</item>
+    </style>
 </resources>
+
+

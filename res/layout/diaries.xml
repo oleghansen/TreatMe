@@ -15,9 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/diaryListView"
         android:layout_alignParentTop="true"
-        android:background="#01DF74"
-        android:paddingTop="5dp"
-        android:orientation="horizontal" >
+        android:background="#339966"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
 
         <ImageButton
             android:id="@+id/menuManageButton"

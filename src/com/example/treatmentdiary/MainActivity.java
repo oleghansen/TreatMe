@@ -41,10 +41,10 @@ public class MainActivity extends Activity {
 		if(dbDiary.findDiaryNotes(hei).isEmpty())
 		{
 			System.out.println("TOM DIARY. LEGGER INN...");
-			dbDiary.addDiary(new Diary("Dag2", "Dag2", "30-12-1992", "To uker", "hei"), hei);
-			dbDiary.addDiary(new Diary("Dag3", "Dag3", "30-12-1992", "To uker", "hei"), hei);
-			dbDiary.addDiary(new Diary("Dag4", "Dag4", "30-12-1992", "To uker", "hei"), hei);
-			dbDiary.addDiary(new Diary("Dag5", "Dag5", "30-12-1992", "To uker", "hei"), hei);
+			dbDiary.addDiary(new Diary("30-10-1992","Dag2", "Tjing", "Noon", "3"), hei);
+			dbDiary.addDiary(new Diary("12-12-1992", "Dag3","Tjong",  "Night", "4"), hei);
+			dbDiary.addDiary(new Diary("10-12-1992", "Dag4","Balle",  "Evening", "1"), hei);
+			dbDiary.addDiary(new Diary("04-12-1992", "Dag5","Fjong",  "Morning", "2"), hei);
 		}
 
 		

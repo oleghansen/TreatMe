@@ -2,21 +2,22 @@ package com.example.treatmentdiary;
 
 import java.util.List;
 
-import android.R.menu;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -29,11 +30,19 @@ public class TreatmentList extends Activity
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Treatment selectedTreatment;
-	private MenuItem item;
+	private Diary selectedNote;
+	private MenuItem item, item2;
 	
 	
 	private TextView titleTV;
 	private ImageButton manageButton, addButton;
+	
+	/* Note details */
+	private TextView tv;
+	private EditText dateET, titleET, textET;
+	private Spinner todSpinner;
+	private RatingBar ratingBar;
+	
 
 
 	@Override
@@ -71,7 +80,8 @@ public class TreatmentList extends Activity
 			public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id)
 			{
 				Diary note = notes.get(position);
-				System.out.println(note.getTitle());
+				selectedNote = note;
+				loadNoteDetails(note);
 			}
 		});
 		
@@ -144,6 +154,60 @@ public class TreatmentList extends Activity
 		listDiary = (ListView)findViewById(R.id.diaryListView);
 		listDiary.setAdapter(diaryAdapter);
 		
+	}
+	
+	
+	/* Note details */
+	private void loadNoteDetails(Diary note)
+	{
+		setContentView(R.layout.diary_note);
+		dateET = (EditText)findViewById(R.id.etDate);
+		titleET = (EditText)findViewById(R.id.etTitle);
+		titleTV = (TextView)findViewById(R.id.textTitle);
+		textET = (EditText)findViewById(R.id.etText);
+		todSpinner = (Spinner)findViewById(R.id.spinnerTod);
+		ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+		
+		ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.timesofday, android.R.layout.simple_spinner_item);
+		todSpinner.setAdapter(adapter);
+		todSpinner.setPopupBackgroundResource(R.drawable.spinner);
+		
+
+		dateET.setText("" + note.getDate());
+		titleTV.setText("" + note.getTitle());
+		titleET.setText("" + note.getTitle());
+		textET.setText(""+note.getDescription() + "time of day: " + note.getTimeOfDay() + " rating: " + note.getRate() + " tretID: " + note.getTreatmentId());
+		if(note.getRate() == null || note.getRate().isEmpty())
+		{
+			ratingBar.setRating(0);
+		}
+		else
+		{
+			ratingBar.setRating(Float.valueOf(note.getRate()));
+		}
+		
+		if(note.getTimeOfDay()==null || note.getTimeOfDay().isEmpty())
+		{
+			todSpinner.setSelection(0);
+		}
+		else
+		{
+			switch(note.getTimeOfDay()) // LAG EN SMIDIGERE MÅTE Å GJØRE DETTE PÅ. GETSTRING(R.ID.. osv? )
+			{
+			case "Morning":
+				todSpinner.setSelection(0);
+				break;
+			case "Noon":
+				todSpinner.setSelection(1);
+				break;
+			case "Evening":
+				todSpinner.setSelection(2);
+				break;
+			case "Night":
+				todSpinner.setSelection(3);
+			}
+		}
+
 	}
 	
 	

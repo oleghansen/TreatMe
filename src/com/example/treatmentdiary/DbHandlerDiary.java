@@ -64,22 +64,51 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		System.out.println("Forsøker å finne note med treatmentId" + treatment.getId());
 
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery,null);
 		
-		if (cursor.moveToFirst()) {
-				do{
-					Diary diary = new Diary();
-					diary.setId(Integer.parseInt(cursor.getString(0)));
-					diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
-					diary.setTitle(cursor.getString(2));
-					diary.setDate(cursor.getString(3));
-					diary.setDescription(cursor.getString(4));
-					diary.setRate(cursor.getString(5));
-					diaryList.add(diary);
+		try
+		{
+			Cursor cursor = db.rawQuery(selectQuery,null);
+			if (cursor.moveToFirst()) 
+			{
+					do{
+						Diary diary = new Diary();
+						diary.setId(Integer.parseInt(cursor.getString(0)));
+						diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
+						diary.setTitle(cursor.getString(2));
+						diary.setDate(cursor.getString(3));
+						diary.setDescription(cursor.getString(4));
+						diary.setRate(cursor.getString(5));
+						diaryList.add(diary);
 
-				}
-			while (cursor.moveToNext());
+					}
+				while (cursor.moveToNext());
+			}
 		}
+		catch(Exception e)
+		{
+			System.out.println("Feil i databaseoppslag");
+			onCreate(db);
+		}
+		finally
+		{
+			Cursor cursor = db.rawQuery(selectQuery,null);
+			if (cursor.moveToFirst()) 
+			{
+					do{
+						Diary diary = new Diary();
+						diary.setId(Integer.parseInt(cursor.getString(0)));
+						diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
+						diary.setTitle(cursor.getString(2));
+						diary.setDate(cursor.getString(3));
+						diary.setDescription(cursor.getString(4));
+						diary.setRate(cursor.getString(5));
+						diaryList.add(diary);
+
+					}
+				while (cursor.moveToNext());
+			}
+		}
+	
 		db.close();
 		return diaryList;
 	}
@@ -99,6 +128,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		values.put(KEY_TITLE, diary.getTitle());
 		values.put(KEY_DATE,diary.getDate());
 		values.put(KEY_TEXT, diary.getDescription());
+		values.put(KEY_TIMEOFDAY, diary.getTimeOfDay());
 		values.put(KEY_RATE, diary.getRate());
 		db.insert(TABLE_DIARY, null, values);
 		System.out.println("Legger inn note med TreatmentId" + treatment.getId());

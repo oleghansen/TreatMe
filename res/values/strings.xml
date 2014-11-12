@@ -4,5 +4,11 @@
     <string name="app_name">treatmentdiary</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string-array name="timesofday">
+        <item>Morning</item>
+        <item>Noon</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
 
 </resources>
