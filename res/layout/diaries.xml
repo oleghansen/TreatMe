@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/diaryListView"
         android:layout_alignParentTop="true"
-        android:background="#339966"
+        android:background="#3e96b7"
         android:orientation="horizontal"
         android:paddingTop="5dp" >
 

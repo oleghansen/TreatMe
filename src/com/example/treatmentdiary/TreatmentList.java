@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -35,13 +36,15 @@ public class TreatmentList extends Activity
 	
 	
 	private TextView titleTV;
-	private ImageButton manageButton, addButton;
+	private ImageButton deleteButton, manageButton, addButton;
 	
 	/* Note details */
 	private TextView tv;
 	private EditText dateET, titleET, textET;
 	private Spinner todSpinner;
 	private RatingBar ratingBar;
+	
+	private boolean ny;
 	
 
 
@@ -129,11 +132,22 @@ public class TreatmentList extends Activity
 	             case R.id.menuManageButton:
 	            	 // Innstillinger
 	             break;
+	             case R.id.menuDeleteButton:
+	            	 deleteNote(selectedNote);
+	            	 filldiaryList(selectedTreatment);
+	            	 loadDiaryList();
+	             break;
 	             case R.id.menuAddButto:
-	     			dbDiary.addDiary(new Diary(), selectedTreatment);
-	    			filldiaryList(selectedTreatment);
-	    			fillDiaryListView();
-	    			registerDiaryClickCallback();
+	            	 if(ny)
+	            	 {
+		 	     			addNote();
+			    			loadDiaryList();
+	            	 }
+	            	 else
+	            	 {
+	            		    loadAddNote();
+	            	 }
+
 	             break;
 	         }
 	     }
@@ -160,7 +174,10 @@ public class TreatmentList extends Activity
 	/* Note details */
 	private void loadNoteDetails(Diary note)
 	{
+		ny = false;
 		setContentView(R.layout.diary_note);
+		deleteButton = (ImageButton)findViewById(R.id.menuDeleteButton);
+		deleteButton.setOnClickListener(onClickListener);
 		dateET = (EditText)findViewById(R.id.etDate);
 		titleET = (EditText)findViewById(R.id.etTitle);
 		titleTV = (TextView)findViewById(R.id.textTitle);
@@ -176,7 +193,7 @@ public class TreatmentList extends Activity
 		dateET.setText("" + note.getDate());
 		titleTV.setText("" + note.getTitle());
 		titleET.setText("" + note.getTitle());
-		textET.setText(""+note.getDescription() + "time of day: " + note.getTimeOfDay() + " rating: " + note.getRate() + " tretID: " + note.getTreatmentId());
+		textET.setText(""+note.getDescription());
 		if(note.getRate() == null || note.getRate().isEmpty())
 		{
 			ratingBar.setRating(0);
@@ -209,6 +226,50 @@ public class TreatmentList extends Activity
 		}
 
 	}
+	/* Note add */
+	private void loadAddNote()
+	{
+		ny = true;
+		
+		setContentView(R.layout.diary_note);
+		
+		deleteButton = (ImageButton)findViewById(R.id.menuDeleteButton);
+		deleteButton.setOnClickListener(onClickListener);
+		
+		dateET = (EditText)findViewById(R.id.etDate);
+		titleET = (EditText)findViewById(R.id.etTitle);
+		titleTV = (TextView)findViewById(R.id.textTitle);
+		textET = (EditText)findViewById(R.id.etText);
+		todSpinner = (Spinner)findViewById(R.id.spinnerTod);
+		ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+		ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.timesofday, android.R.layout.simple_spinner_item);
+		todSpinner.setAdapter(adapter);
+		todSpinner.setPopupBackgroundResource(R.drawable.spinner);
+		dateET.setText("");
+		titleTV.setText("");
+		titleET.setText("New note");
+		
+		dateET.setHint("Date");
+		titleET.setHint("Title");
+		textET.setHint("Write your note here");
+		ratingBar.setRating(0);
+		addButton = (ImageButton)findViewById(R.id.menuAddButto);
+		addButton.setOnClickListener(onClickListener);
+	}
+	
+	private void addNote()
+	{
+		dbDiary.addDiary(new Diary(dateET.getText().toString(),titleET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
+	}
+	
+	private void deleteNote(Diary note)
+	{
+		System.out.println("deleteNote(" + note.getTitle() + ")");
+		Toast deleteToast = Toast.makeText(getApplicationContext(), "'"+note.getTitle() + "'" + " deleted.", Toast.LENGTH_SHORT);
+		deleteToast.show();
+		dbDiary.deleteNote(note);
+	}
+	
 	
 	
 	private class MyListAdapter extends ArrayAdapter<Treatment>
@@ -261,6 +322,12 @@ public class TreatmentList extends Activity
 				itemView = getLayoutInflater().inflate(R.layout.diary_view, parent, false);
 				Diary currentNote = notes.get(position);
 				TextView textMake = (TextView)itemView.findViewById(R.id.txtMake);
+				TextView textDesc = (TextView)itemView.findViewById(R.id.textListDesc);
+				TextView textDate = (TextView)itemView.findViewById(R.id.textListDate);
+				RatingBar ratingBarList = (RatingBar)itemView.findViewById(R.id.ratingBar1);
+				ratingBarList.setRating(Float.valueOf(currentNote.getRate()));
+				textDesc.setText(currentNote.getDescription());
+				textDate.setText(currentNote.getDate());
 				if(currentNote.getTitle() == null || currentNote.getTitle().isEmpty())
 				{
 					textMake.setText("(Tom)");
@@ -303,10 +370,7 @@ public class TreatmentList extends Activity
 		switch(item.getItemId())
 		{
 		case R.id.add:
-			dbDiary.addDiary(new Diary(), selectedTreatment);
-			filldiaryList(selectedTreatment);
-			fillDiaryListView();
-			registerDiaryClickCallback();
+			loadTreatmentList();
 		break;
 		case android.R.id.home:
 			finish();

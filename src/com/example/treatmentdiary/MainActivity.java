@@ -27,16 +27,17 @@ public class MainActivity extends Activity {
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
 		
-		Treatment hei = db.findTreatment(1);
+		
 		if(db.findAllTreatments().isEmpty())
 		{
 			
-			db.addTreatment(hei);
 			db.addTreatment(new Treatment("HodeVondt", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("Hodedritt", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("Hodepikk", "Paracet", "30-12-1992", "To uker"));
 			db.addTreatment(new Treatment("HodeMorn", "Paracet", "30-12-1992", "To uker"));
 		}
+		
+		Treatment hei = db.findTreatment(1);
 
 		if(dbDiary.findDiaryNotes(hei).isEmpty())
 		{

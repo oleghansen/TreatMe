@@ -38,7 +38,7 @@ public class DbHandlerTreatments extends SQLiteOpenHelper
 	{
 		String CREATE_TABLE = "CREATE TABLE " + 
 				TABLE_TREATMENT + "(" + 
-				KEY_ID + " INTEGER PRIMARY KEY, " + 
+				KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 				KEY_NAME + " TEXT, " +
 				KEY_METHOD + " TEXT, " +
 				KEY_STARTED + " DATETIME, " +

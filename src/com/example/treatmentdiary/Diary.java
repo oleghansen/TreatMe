@@ -16,6 +16,7 @@ public class Diary {
 		title = t;
 		date = d;
 		text = tx;
+		timeofday = tod;
 		rate = r;
 	}
 	
@@ -26,6 +27,7 @@ public class Diary {
 		title = t;
 		date = d;
 		text = tx;
+		timeofday = tod;
 		rate = r;
 	}
 	
