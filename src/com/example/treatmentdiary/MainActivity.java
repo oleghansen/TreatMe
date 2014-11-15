@@ -2,21 +2,25 @@ package com.example.treatmentdiary;
 
 
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	public final static int CURRENTTREATMENTSRESULT = 1, USEDTREATMENTSRESULT = 2;
-	private Button treatmentsButton, usedTreatmentsButton;
+	private ImageButton barBackButton, usedTreatmentsButton, treatmentsButton;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
+	private Typeface customFont;
 	
 
 	@Override
@@ -26,15 +30,14 @@ public class MainActivity extends Activity {
 		
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
-		
+		customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
 		
 		if(db.findAllTreatments().isEmpty())
 		{
 			
-			db.addTreatment(new Treatment("HodeVondt", "Paracet", "30-12-1992", "To uker"));
-			db.addTreatment(new Treatment("Hodedritt", "Paracet", "30-12-1992", "To uker"));
-			db.addTreatment(new Treatment("Hodepikk", "Paracet", "30-12-1992", "To uker"));
-			db.addTreatment(new Treatment("HodeMorn", "Paracet", "30-12-1992", "To uker"));
+			db.addTreatment(new Treatment("Basiron (eksempel)", "Acne", "01-01-2014", "To uker"));
+			db.addTreatment(new Treatment("Paracet", "Hodepine", "30-12-2012", "To uker"));
+			db.addTreatment(new Treatment("Grønn te", "Humør", "30-10-2010", "Fire uker"));
 		}
 		
 		Treatment hei = db.findTreatment(1);
@@ -42,20 +45,41 @@ public class MainActivity extends Activity {
 		if(dbDiary.findDiaryNotes(hei).isEmpty())
 		{
 			System.out.println("TOM DIARY. LEGGER INN...");
-			dbDiary.addDiary(new Diary("30-10-1992","Dag2", "Tjing", "Noon", "3"), hei);
-			dbDiary.addDiary(new Diary("12-12-1992", "Dag3","Tjong",  "Night", "4"), hei);
-			dbDiary.addDiary(new Diary("10-12-1992", "Dag4","Balle",  "Evening", "1"), hei);
-			dbDiary.addDiary(new Diary("04-12-1992", "Dag5","Fjong",  "Morning", "2"), hei);
+			Random rn = new Random();
+			int min = 0; int max = 5;
+			for(int i = 1; i < 30; i++)
+			{
+				dbDiary.addDiary(new Diary(i + "-1-2014","Dag " + i, "Dette ser ut til å fungere. Jeg har fått litt tørt ansikt av kremen, men kompenserer med fuktighetskrem. Får se hvordan det går videre.", "Noon", String.valueOf(rn.nextInt(max-min +1) + min)), hei);
+			}
 		}
 
-		
-
-
-		treatmentsButton = (Button)findViewById(R.id.currentTreatmentsButton);
-		usedTreatmentsButton = (Button)findViewById(R.id.usedTreatmentsButton);
+		treatmentsButton = (ImageButton)findViewById(R.id.currentTreatmentsButton);
+		usedTreatmentsButton = (ImageButton)findViewById(R.id.usedTreatmentsButton);
 		
 		treatmentsButton.setOnClickListener(onClickListener);
 		usedTreatmentsButton.setOnClickListener(onClickListener);
+		getCustomActionBar();
+		 
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		barBackButton.setVisibility(View.INVISIBLE);
+	}
+
+	private void getCustomActionBar()
+	{
+		getActionBar().setCustomView(R.layout.custom_actionbar);
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		
+		TextView actionTitle = (TextView)findViewById(R.id.actionBarTitle);
+		actionTitle.setTypeface(customFont);
+		barBackButton = (ImageButton)findViewById(R.id.actionBackButton);
+		barBackButton.setVisibility(View.INVISIBLE);
+		
 	}
 	
 	private OnClickListener onClickListener = new OnClickListener() {
@@ -76,22 +100,4 @@ public class MainActivity extends Activity {
 	};
 	
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 }

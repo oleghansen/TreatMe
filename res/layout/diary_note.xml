@@ -152,9 +152,9 @@
 
         <TextView
             android:id="@+id/textTitle"
-            android:layout_width="238dp"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="0.85"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Treatment"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -164,7 +164,6 @@
             android:id="@+id/menuAddButto"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight="1.01"
             android:background="@null"
             android:src="@drawable/btn_check_buttonless_on" />
     </LinearLayout>

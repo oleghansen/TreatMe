@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:cacheColorHint="#00000000" >
 
     <TextView
         android:id="@+id/txtMake"
@@ -10,24 +11,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="14dp"
-        android:text="Make Shown Here"
+        android:text="Title"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000" />
-
-    <TextView
-        android:id="@+id/textListDesc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:layout_alignLeft="@+id/txtMake"
-        android:layout_alignRight="@+id/textMethod"
-        android:layout_below="@+id/txtMake"
-        android:layout_marginTop="4dp"
-        android:paddingBottom="10dp"
-        android:text="Started"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#000"
-        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textListDate"
@@ -37,7 +23,7 @@
         android:layout_alignBottom="@+id/txtMake"
         android:layout_alignParentRight="true"
         android:layout_marginRight="23dp"
-        android:text="days"
+        android:text="Date"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000"
         android:textSize="12sp" />
@@ -48,6 +34,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/textListDate"
-        android:layout_alignTop="@+id/textListDesc" />
+        android:layout_below="@+id/txtMake" />
+
+    <TextView
+        android:id="@+id/textListDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtMake"
+        android:layout_below="@+id/ratingBar1"
+        android:minHeight="50dp"
+        android:paddingBottom="10dp"
+        android:text="Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000"
+        android:textSize="12sp" />
 
 </RelativeLayout>

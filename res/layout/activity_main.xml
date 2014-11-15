@@ -8,24 +8,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.treatmentdiary.MainActivity" >
 
-    <Button
-        android:id="@+id/currentTreatmentsButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="47dp"
-        android:text="Treatments" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/usedTreatmentsButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/currentTreatmentsButton"
-        android:layout_alignBottom="@+id/currentTreatmentsButton"
-        android:layout_toRightOf="@+id/currentTreatmentsButton"
-        android:text="Treatment history" />
+        <ImageButton
+            android:id="@+id/currentTreatmentsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="47dp"
+            android:background="@null"
+            android:src="@drawable/btn_treatments" />
+
+                <ImageButton
+                    android:id="@+id/usedTreatmentsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="47dp"
+                    android:background="@null"
+                    android:src="@drawable/btn_old_treatments" />
+
+    </LinearLayout>
 
 </RelativeLayout>

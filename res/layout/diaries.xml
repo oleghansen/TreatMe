@@ -10,11 +10,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.birthdaysms.TreatmentList" >
 
+    <ListView
+        android:id="@+id/diaryListView"
+        android:layout_width="fill_parent"
+        android:layout_height="420dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:divider="#000000"
+        android:dividerHeight="0.5dip" >
+    </ListView>
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/diaryListView"
-        android:layout_alignParentTop="true"
         android:background="#3e96b7"
         android:orientation="horizontal"
         android:paddingTop="5dp" >
@@ -43,17 +52,6 @@
             android:layout_weight="1"
             android:background="@null"
             android:src="@android:drawable/ic_menu_add" />
-
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/diaryListView"
-        android:layout_width="fill_parent"
-        android:layout_height="420dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:divider="#000000"
-        android:dividerHeight="0.5dip" >
-    </ListView>
 
 </RelativeLayout>
