@@ -1,16 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/mainbackground"
-    android:padding="0dp"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.birthdaysms.TreatmentList" >
+    android:orientation="vertical" >
 
-    <ScrollView
+        <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -35,21 +30,21 @@
                     android:layout_height="wrap_content" >
 
                     <TextView
-                        android:id="@+id/tvDate"
+                        android:id="@+id/tvDateTreatment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
-                        android:text="Date"
+                        android:text="Starting date"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <EditText
-                        android:id="@+id/etDate"
+                        android:id="@+id/etDateTreatment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:inputType="date" >
-
+                        android:inputType="date"
+                        android:textColor="#ffffff" >
                         <requestFocus />
                     </EditText>
                 </LinearLayout>
@@ -61,20 +56,43 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        android:id="@+id/tvTod"
+                        android:id="@+id/tvDuration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="0.31"
-                        android:text="Time of day"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:text="Duration"
+                                                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    
+                    <TextView
+                        android:id="@+id/tvOptional"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="0dp"
+                        android:layout_weight="0.31"
+                        android:text="(optional)"
+                        android:textSize="14sp" />
 
+                    <EditText
+                        android:id="@+id/etDurationNumberTreatment"
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="(#)"
+                        android:inputType="number"
+                        android:textSize="14sp" >
+
+                    </EditText>
                     <Spinner
-                        android:id="@+id/spinnerTod"
+                        android:id="@+id/spinnerDuration"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
+                    
+
+                    
                 </LinearLayout>
             </LinearLayout>
 
@@ -84,49 +102,21 @@
                 android:orientation="vertical" >
 
                 <EditText
-                    android:id="@+id/etTitle"
+                    android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
                     android:ems="10"
-                    android:text="Title" />
-
-                <EditText
-                    android:id="@+id/etText"
+                    android:hint="Condition" />
+                   <EditText
+                    android:id="@+id/etMethod"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:background="#F0F0F0"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
-                    android:text="Note description" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@drawable/shape"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/textView1"
-                    android:textColor="#FFFFFF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="How did you feel today?"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1" />
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:hint="Treatment/medicine" />
             </LinearLayout>
 
         </LinearLayout>
@@ -167,5 +157,5 @@
             android:background="@null"
             android:src="@drawable/btn_check_buttonless_on" />
     </LinearLayout>
-
+    
 </RelativeLayout>

@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -46,16 +46,16 @@ public class TreatmentList extends Activity
 	
 	private Typeface customFont;
 	private TextView titleTV;
-	private ImageButton deleteButton, manageButton, addButton;
+	private ImageButton deleteButton, manageButton, addButton, manageButtonTreatments, addButtonTreatments;
 	
 	/* Note details */
-	private TextView tv;
-	private EditText dateET, titleET, textET;
-	private Spinner todSpinner;
+	private TextView tv, todTv, dateTv, dateTreatmentTV, durationTreatmentTV, optionalTreatmentTV;
+	private EditText dateET, titleET, textET, dateTreatmentET, durationNumberTreatmentET, nameET, methodET;
+	private Spinner todSpinner, durSpinner;
 	private RatingBar ratingBar;
 	private ImageButton barBackButton;
 	
-	private boolean ny, update;
+	private boolean nyDiary, nyTreatment, update;
 	
 
 
@@ -63,21 +63,24 @@ public class TreatmentList extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		getCustomActionBar();
+		customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
+		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
-		customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
-		loadTreatmentList();
 		
+		loadTreatmentList();
+		getCustomActionBar();
     }
 	
 	private void getCustomActionBar()
 	{
 		getActionBar().setCustomView(R.layout.custom_actionbar);
 		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		
 		TextView actionTitle = (TextView)findViewById(R.id.actionBarTitle);
 		actionTitle.setTypeface(customFont);
+		
 		barBackButton = (ImageButton)findViewById(R.id.actionBackButton);
 		barBackButton.setVisibility(View.VISIBLE);
 		barBackButton.setOnClickListener(onClickListener);
@@ -127,9 +130,96 @@ public class TreatmentList extends Activity
 	{
 		update = false;
 		setContentView(R.layout.treatments);
+		manageButtonTreatments = (ImageButton)findViewById(R.id.menuManageButtonTreatments);
+		addButtonTreatments = (ImageButton)findViewById(R.id.menuAddButtonTreatments);
+		manageButtonTreatments.setOnClickListener(onClickListener);
+		addButtonTreatments.setOnClickListener(onClickListener);
+		
+		
 		fillTreatmentList();
 		fillListView();
 		registerClickCallback();
+	}
+	
+	private void loadTreatmentDetails(Treatment treatment)
+	{
+			setContentView(R.layout.treatment_details);
+			dateTreatmentET = (EditText)findViewById(R.id.etDateTreatment);
+			durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
+			durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
+			
+			titleTV = (TextView)findViewById(R.id.textTitle);
+			dateTreatmentTV = (TextView)findViewById(R.id.tvDateTreatment);
+			durationTreatmentTV = (TextView)findViewById(R.id.tvDuration);
+			optionalTreatmentTV = (TextView)findViewById(R.id.tvOptional);
+			nameET = (EditText)findViewById(R.id.etName);
+			methodET = (EditText)findViewById(R.id.etMethod);
+			
+			ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.duration, android.R.layout.simple_spinner_item);
+			durSpinner.setAdapter(adapter);
+			durSpinner.setPopupBackgroundResource(R.drawable.spinner);
+			
+			/*Date handling*/
+			
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			try {
+				c.setTime(sdf.parse(treatment.getStarted()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			yr = c.get(Calendar.HOUR_OF_DAY);
+			month = c.get(Calendar.MONTH);
+			day = c.get(Calendar.DAY_OF_MONTH);
+			
+			/* -------------------------------*/
+
+			titleTV.setTypeface(customFont);
+			dateTreatmentTV.setTypeface(customFont);
+			durationTreatmentTV.setTypeface(customFont);
+			optionalTreatmentTV.setTypeface(customFont);
+			nameET.setTypeface(customFont);
+			methodET.setTypeface(customFont);
+			dateTreatmentET.setTypeface(customFont);
+			
+			titleTV.setText(selectedTreatment.getName());
+			nameET.setText(selectedTreatment.getName());
+			methodET.setText(selectedTreatment.getMethod());
+			dateTreatmentET.setText(selectedTreatment.getStarted());
+			if(!(selectedTreatment.getExpectedTime() == null || selectedTreatment.getExpectedTime().isEmpty()))
+			{
+				int res = 0;
+				for (int i=0; i < selectedTreatment.getExpectedTime().length(); i++) {
+				    char ch = selectedTreatment.getExpectedTime().charAt(i);
+				    if (ch < '0' || ch > '9') continue;
+				    res = res * 10 + ch - '0';
+				}
+				
+				if(selectedTreatment.getExpectedTime().contains("Days"))
+				{
+					durSpinner.setSelection(0);
+				}
+				else if(selectedTreatment.getExpectedTime().contains("Week"))
+				{
+					durSpinner.setSelection(1);
+				}
+				else if(selectedTreatment.getExpectedTime().contains("Month"))
+				{
+					durSpinner.setSelection(2);
+				}
+				else if(selectedTreatment.getExpectedTime().contains("Year"))
+				{
+					durSpinner.setSelection(3);
+				}
+				
+				durationNumberTreatmentET.setText(String.valueOf(res));
+			}
+	}
+	
+	private void loadAddTreatment()
+	{
+		
 	}
 	
 	private void loadDiaryList()
@@ -161,8 +251,14 @@ public class TreatmentList extends Activity
 	            	 filldiaryList(selectedTreatment);
 	            	 loadDiaryList();
 	             break;
+	             case R.id.menuAddButtonTreatments:
+	            	 // legg til ny
+	             break;
+	             case R.id.menuManageButtonTreatments:
+	            	 //innstillinger
+	             break;
 	             case R.id.menuAddButto:
-	            	 if(ny)
+	            	 if(nyDiary)
 	            	 {
 		 	     			addNote();
 		 	     			filldiaryList(selectedTreatment);
@@ -201,6 +297,16 @@ public class TreatmentList extends Activity
 		ArrayAdapter<Treatment> adapter = new MyListAdapter();
 		list = (ListView) findViewById(R.id.treatmentsListView);
 		list.setAdapter(adapter);
+		list.setOnItemLongClickListener(new OnItemLongClickListener()
+		{
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id)
+			{
+				Treatment clickedTreatment = treatments.get(pos);
+				selectedTreatment = clickedTreatment;
+				loadTreatmentDetails(selectedTreatment);
+				return true;
+			}
+		});
 		
 	}
 	
@@ -217,7 +323,7 @@ public class TreatmentList extends Activity
 	private void loadNoteDetails(Diary note)
 	{
 		update = true;
-		ny = false;
+		nyDiary = false;
 		setContentView(R.layout.diary_note);
 		deleteButton = (ImageButton)findViewById(R.id.menuDeleteButton);
 		deleteButton.setOnClickListener(onClickListener);
@@ -245,11 +351,15 @@ public class TreatmentList extends Activity
 		
 		titleET = (EditText)findViewById(R.id.etTitle);
 		titleTV = (TextView)findViewById(R.id.textTitle);
+		todTv = (TextView)findViewById(R.id.tvTod);
+		dateTv = (TextView)findViewById(R.id.tvDate);
 		textET = (EditText)findViewById(R.id.etText);
 		todSpinner = (Spinner)findViewById(R.id.spinnerTod);
 		ratingBar = (RatingBar)findViewById(R.id.ratingBar);
 		
 		titleTV.setTypeface(customFont);
+		todTv.setTypeface(customFont);
+		dateTv.setTypeface(customFont);
 		titleET.setTypeface(customFont);
 		textET.setTypeface(customFont);
 		dateET.setTypeface(customFont);
@@ -299,7 +409,7 @@ public class TreatmentList extends Activity
 	/* Note add */
 	private void loadAddNote()
 	{
-		ny = true;
+		nyDiary = true;
 		
 		setContentView(R.layout.diary_note);
 		
@@ -397,9 +507,11 @@ public class TreatmentList extends Activity
 			}
 			
 			TextView textStarted = (TextView)itemView.findViewById(R.id.textStarted);
-			textStarted.setText("ID: " + currentTreatment.getId());
+			textStarted.setText("Startet  " + currentTreatment.getStarted());
 			textStarted.setTypeface(customFont);
 			TextView textMethod = (TextView)itemView.findViewById(R.id.textMethod);
+			textMethod.setText(currentTreatment.getMethod());
+			textMethod.setTypeface(customFont);
 			return itemView;
 		}
 	}

@@ -12,7 +12,8 @@
         android:layout_marginLeft="14dp"
         android:text="Make Shown Here"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#000" />
+        android:textColor="#000"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textStarted"

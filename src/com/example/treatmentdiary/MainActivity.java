@@ -35,9 +35,9 @@ public class MainActivity extends Activity {
 		if(db.findAllTreatments().isEmpty())
 		{
 			
-			db.addTreatment(new Treatment("Basiron (eksempel)", "Acne", "01-01-2014", "To uker"));
-			db.addTreatment(new Treatment("Paracet", "Hodepine", "30-12-2012", "To uker"));
-			db.addTreatment(new Treatment("Grønn te", "Humør", "30-10-2010", "Fire uker"));
+			db.addTreatment(new Treatment("Basiron (eksempel)", "Acne", "01-01-2014", "2 Week(s)"));
+			db.addTreatment(new Treatment("Paracet", "Hodepine", "30-12-2012", "33 Days"));
+			db.addTreatment(new Treatment("Grønn te", "Humør", "30-10-2010", "1 Year(s)"));
 		}
 		
 		Treatment hei = db.findTreatment(1);
