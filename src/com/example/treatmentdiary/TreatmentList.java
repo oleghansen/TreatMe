@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,33 +34,35 @@ import android.widget.Toast;
 
 
 
+
 public class TreatmentList extends Activity
 {
+	private AlertDialog.Builder dialogBuilder;
 	private ListView list, listDiary;
-	private List<Treatment> treatments;
-	private List<Diary> notes;
+	private List<Treatment> treatments, treatmentsOld;
+	private List<Diary> notes, notesOld;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Treatment selectedTreatment;
 	private Diary selectedNote;
 	private MenuItem item, item2;
 	static final int dialog_id=1;
-	int yr, day, month;
+	private int yr, day, month;
+	private boolean inOld;
 	
 	private Typeface customFont;
 	private TextView titleTV;
 	private ImageButton deleteButton, manageButton, addButton, manageButtonTreatments, addButtonTreatments;
+	private Button buttonRate;
 	
 	/* Note details */
-	private TextView tv, todTv, dateTv, dateTreatmentTV, durationTreatmentTV, optionalTreatmentTV;
+	private TextView tv, todTv, dateTv, dateTreatmentTV, durationTreatmentTV, optionalTreatmentTV, textRateHelp, textRateName;
 	private EditText dateET, titleET, textET, dateTreatmentET, durationNumberTreatmentET, nameET, methodET;
 	private Spinner todSpinner, durSpinner;
-	private RatingBar ratingBar;
+	private RatingBar ratingBar, ratingBarTreatments, ratingBarRate;
 	private ImageButton barBackButton;
 	
 	private boolean nyDiary, nyTreatment, update;
-	
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -69,10 +74,17 @@ public class TreatmentList extends Activity
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
 		
-		loadTreatmentList();
+		if(MainActivity.old == 1)
+		{
+			loadTreatmentList();
+		}
+		else if(MainActivity.old == 2)
+		{
+			loadOldTreatmentList();
+		}
 		getCustomActionBar();
     }
-	
+
 	private void getCustomActionBar()
 	{
 		getActionBar().setCustomView(R.layout.custom_actionbar);
@@ -114,7 +126,114 @@ public class TreatmentList extends Activity
 		});
 		
 	}
-    
+	private void treatmentLongClickDialog(final Treatment treatment)
+	{
+		if(!inOld)
+		{
+			dialogBuilder = new AlertDialog.Builder(this);
+			dialogBuilder.setTitle(treatment.getName());
+			
+			dialogBuilder.setPositiveButton(("Settings"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					loadTreatmentDetails(treatment);
+				}
+			});
+			
+			dialogBuilder.setNegativeButton(("Delete"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					
+					deleteDialog(treatment);
+				}
+			});
+			
+			dialogBuilder.setNeutralButton(("End treatment"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					loadTreatmentRating(treatment);
+				}
+			});
+		}
+		else
+		{
+			dialogBuilder = new AlertDialog.Builder(this);
+			dialogBuilder.setTitle(treatment.getName());
+			
+			dialogBuilder.setPositiveButton(("Settings"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					loadTreatmentDetails(treatment);
+				}
+			});
+			
+			dialogBuilder.setNegativeButton(("Delete"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					
+					deleteTreatment(treatment);
+					loadOldTreatmentList();
+				}
+			});
+			
+			dialogBuilder.setNeutralButton(("Re-open treatment"), new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					makeOpen(treatment);
+					loadOldTreatmentList();
+				}
+			});
+		}
+		
+		
+		AlertDialog alert = dialogBuilder.create();
+		alert.show();
+		
+	}
+	
+	private void deleteDialog(final Treatment treatment)
+	{
+		dialogBuilder = new AlertDialog.Builder(this);
+		dialogBuilder.setTitle("Delete " + treatment.getName());
+		dialogBuilder.setMessage("Are you sure you want to delete this treatment without saving it to your history?");
+		
+		dialogBuilder.setPositiveButton(("Yes"), new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which)
+			{
+				deleteTreatment(treatment);
+				loadTreatmentList();
+			}
+		});
+		
+		dialogBuilder.setNegativeButton(("Cancel"), new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which)
+			{
+				
+				loadTreatmentList();
+			}
+		});
+		
+		dialogBuilder.setNeutralButton(("Save"), new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which)
+			{
+				System.out.println("Lagre behandling i historie");
+			}
+		});
+		
+		AlertDialog alert = dialogBuilder.create();
+		alert.show();
+		
+	}
+	
 	private void fillTreatmentList()
 	{
 		treatments = db.findAllTreatments();
@@ -125,28 +244,60 @@ public class TreatmentList extends Activity
 		notes = dbDiary.findDiaryNotes(treatment);
 	}
 
+	private void fillOldTreatmentList()
+	{
+		treatments = db.findOldTreatments();
+	}
 	
 	private void loadTreatmentList()
 	{
+		inOld = false;
 		update = false;
 		setContentView(R.layout.treatments);
 		manageButtonTreatments = (ImageButton)findViewById(R.id.menuManageButtonTreatments);
 		addButtonTreatments = (ImageButton)findViewById(R.id.menuAddButtonTreatments);
 		manageButtonTreatments.setOnClickListener(onClickListener);
 		addButtonTreatments.setOnClickListener(onClickListener);
-		
+
 		
 		fillTreatmentList();
 		fillListView();
 		registerClickCallback();
 	}
 	
+	private void loadOldTreatmentList()
+	{
+		inOld = true;
+		update = false;
+		setContentView(R.layout.treatments_old);
+		
+		
+		fillOldTreatmentList();
+		fillListView();
+		registerClickCallback();
+	}
+	
+	private void makeOld(Treatment treatment)
+	{
+		db.makeTreatmentOld(treatment);
+	}
+	private void makeOpen(Treatment treatment)
+	{
+		db.makeTreatmentOpen(treatment);
+		Toast openToast = Toast.makeText(getApplicationContext(), "'"+ treatment.getName() + "'" + " was re-opened.", Toast.LENGTH_SHORT);
+		openToast.show();
+	}
+	
 	private void loadTreatmentDetails(Treatment treatment)
 	{
+			nyTreatment = false;
 			setContentView(R.layout.treatment_details);
 			dateTreatmentET = (EditText)findViewById(R.id.etDateTreatment);
 			durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
 			durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
+			
+			addButton = (ImageButton)findViewById(R.id.menuAddButtonNewTreatment);
+			addButton.setOnClickListener(onClickListener);
 			
 			titleTV = (TextView)findViewById(R.id.textTitle);
 			dateTreatmentTV = (TextView)findViewById(R.id.tvDateTreatment);
@@ -217,22 +368,100 @@ public class TreatmentList extends Activity
 			}
 	}
 	
+	private void loadTreatmentRating(Treatment treatment)
+	{
+		setContentView(R.layout.treatment_rating);
+		textRateHelp = (TextView)findViewById(R.id.textRateHelpText);
+		textRateName = (TextView)findViewById(R.id.textRateTreatmentName);
+		ratingBarRate = (RatingBar)findViewById(R.id.rateTreatment);
+		buttonRate = (Button)findViewById(R.id.rateButton);
+		buttonRate.setOnClickListener(onClickListener);
+		
+		textRateName.setText(treatment.getName());
+		
+		textRateHelp.setTypeface(customFont);
+		textRateName.setTypeface(customFont);
+		buttonRate.setTypeface(customFont);
+	}
+	
+	private void rateTreatment()
+	{
+		db.rateTreatment(selectedTreatment, (int)ratingBarRate.getRating());
+		makeOld(selectedTreatment);
+		Toast rateToast = Toast.makeText(getApplicationContext(), "'"+ selectedTreatment.getName()+ "'" + " was moved to history", Toast.LENGTH_SHORT);
+		rateToast.show();
+		
+	}
+	
 	private void loadAddTreatment()
 	{
+		nyTreatment = true;
+		setContentView(R.layout.treatment_details);
+		addButton = (ImageButton)findViewById(R.id.menuAddButtonNewTreatment);
+		addButton.setOnClickListener(onClickListener);
+		dateTreatmentET = (EditText)findViewById(R.id.etDateTreatment);
+		durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
+		durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
 		
+		titleTV = (TextView)findViewById(R.id.textTitle);
+		dateTreatmentTV = (TextView)findViewById(R.id.tvDateTreatment);
+		durationTreatmentTV = (TextView)findViewById(R.id.tvDuration);
+		optionalTreatmentTV = (TextView)findViewById(R.id.tvOptional);
+		nameET = (EditText)findViewById(R.id.etName);
+		methodET = (EditText)findViewById(R.id.etMethod);
+		
+		ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.duration, android.R.layout.simple_spinner_item);
+		durSpinner.setAdapter(adapter);
+		durSpinner.setPopupBackgroundResource(R.drawable.spinner);
+		
+		titleTV.setTypeface(customFont);
+		dateTreatmentTV.setTypeface(customFont);
+		durationTreatmentTV.setTypeface(customFont);
+		optionalTreatmentTV.setTypeface(customFont);
+		nameET.setTypeface(customFont);
+		methodET.setTypeface(customFont);
+		dateTreatmentET.setTypeface(customFont);
+	}
+	
+	private void addTreatment()
+	{
+		db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateTreatmentET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
+	}
+	
+	private void updateTreatment(Treatment treatment)
+	{
+		Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " updated.", Toast.LENGTH_SHORT);
+		updateToast.show();
+		Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateTreatmentET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
+		db.updateTreatment(treatment, updated);
+	}
+	
+	private void deleteTreatment(Treatment treatment)
+	{
+		db.deleteTreatment(treatment);
 	}
 	
 	private void loadDiaryList()
 	{
 		update = false;
-		setContentView(R.layout.diaries);
-		titleTV = (TextView)findViewById(R.id.textTitle);
-		titleTV.setText(selectedTreatment.getName());
-		titleTV.setTypeface(customFont);
-		manageButton = (ImageButton)findViewById(R.id.menuManageButton);
-		addButton = (ImageButton)findViewById(R.id.menuAddButto);
-		manageButton.setOnClickListener(onClickListener);
-		addButton.setOnClickListener(onClickListener);
+		if(inOld)
+		{
+			setContentView(R.layout.diaries_old);
+			titleTV = (TextView)findViewById(R.id.textTitle);
+			titleTV.setText(selectedTreatment.getName());
+			titleTV.setTypeface(customFont);
+		}
+		else
+		{
+			setContentView(R.layout.diaries);
+			titleTV = (TextView)findViewById(R.id.textTitle);
+			titleTV.setText(selectedTreatment.getName());
+			titleTV.setTypeface(customFont);
+			manageButton = (ImageButton)findViewById(R.id.menuManageButton);
+			addButton = (ImageButton)findViewById(R.id.menuAddButto);
+			manageButton.setOnClickListener(onClickListener);
+			addButton.setOnClickListener(onClickListener);
+		}
 		
 		fillDiaryListView();
 		registerDiaryClickCallback();
@@ -244,7 +473,7 @@ public class TreatmentList extends Activity
 	     {
 	         switch(v.getId()){
 	             case R.id.menuManageButton:
-	            	 // Innstillinger
+	            	 loadTreatmentDetails(selectedTreatment);
 	             break;
 	             case R.id.menuDeleteButton:
 	            	 deleteNote(selectedNote);
@@ -252,7 +481,23 @@ public class TreatmentList extends Activity
 	            	 loadDiaryList();
 	             break;
 	             case R.id.menuAddButtonTreatments:
-	            	 // legg til ny
+	            	 loadAddTreatment();
+	             break;
+	             case R.id.rateButton:
+	            	 rateTreatment();
+	            	 loadOldTreatmentList();
+	             break;
+	             case R.id.menuAddButtonNewTreatment:
+	            	 if(nyTreatment)
+	            	 {
+	            		 addTreatment();
+	            		 loadTreatmentList();
+	            	 }
+	            	 else
+	            	 {
+	            		 updateTreatment(selectedTreatment);
+	            		 loadTreatmentList();
+	            	 }
 	             break;
 	             case R.id.menuManageButtonTreatments:
 	            	 //innstillinger
@@ -291,25 +536,25 @@ public class TreatmentList extends Activity
 	     }
 	};
 	
-
 	private void fillListView()
 	{
 		ArrayAdapter<Treatment> adapter = new MyListAdapter();
 		list = (ListView) findViewById(R.id.treatmentsListView);
 		list.setAdapter(adapter);
-		list.setOnItemLongClickListener(new OnItemLongClickListener()
-		{
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id)
-			{
-				Treatment clickedTreatment = treatments.get(pos);
-				selectedTreatment = clickedTreatment;
-				loadTreatmentDetails(selectedTreatment);
-				return true;
-			}
-		});
 		
+
+			list.setOnItemLongClickListener(new OnItemLongClickListener()
+			{
+				public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id)
+				{
+					Treatment clickedTreatment = treatments.get(pos);
+					selectedTreatment = clickedTreatment;
+					treatmentLongClickDialog(selectedTreatment);
+					return true;
+				}
+			});
 	}
-	
+
 	private void fillDiaryListView()
 	{
 		ArrayAdapter<Diary> diaryAdapter = new MyDiaryAdapter();
@@ -476,8 +721,6 @@ public class TreatmentList extends Activity
 	
 	
 	
-	
-	
 	private class MyListAdapter extends ArrayAdapter<Treatment>
 	{
 		public MyListAdapter()
@@ -496,6 +739,16 @@ public class TreatmentList extends Activity
 			Treatment currentTreatment = treatments.get(position);
 			TextView textMake = (TextView)itemView.findViewById(R.id.txtMake);
 			textMake.setTypeface(customFont);
+			RatingBar ratingTreatment = (RatingBar)itemView.findViewById(R.id.ratingBarTreatments);
+			if(inOld)
+			{
+				ratingTreatment.setVisibility(View.VISIBLE);
+				ratingTreatment.setRating(Float.valueOf(currentTreatment.getRating()));
+			}
+			else
+			{
+				ratingTreatment.setVisibility(View.INVISIBLE);
+			}
 			
 			if(currentTreatment.getName() == null || currentTreatment.getName().isEmpty())
 			{

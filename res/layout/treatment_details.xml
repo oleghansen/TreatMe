@@ -151,7 +151,7 @@
             android:textColor="#fff" />
 
         <ImageButton
-            android:id="@+id/menuAddButto"
+            android:id="@+id/menuAddButtonNewTreatment"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"

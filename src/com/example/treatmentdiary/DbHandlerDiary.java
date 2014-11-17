@@ -73,19 +73,12 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 					do{
 						Diary diary = new Diary();
 						diary.setId(Integer.parseInt(cursor.getString(0)));
-						System.out.println("diary.setId(Integer.parseInt(cursor.getString(0)));" + cursor.getString(0));
 						diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
-						System.out.println("diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));" + cursor.getString(1));
 						diary.setTitle(cursor.getString(2));
-						System.out.println("diary.setTitle(cursor.getString(2));" + cursor.getString(2));
 						diary.setDate(cursor.getString(3));
-						System.out.println("diary.setDate(cursor.getString(3));" + cursor.getString(3));
 						diary.setDescription(cursor.getString(4));
-						System.out.println("diary.setDescription(cursor.getString(4));" + cursor.getString(4));
 						diary.setTimeOfDay(cursor.getString(5));
-						System.out.println("diary.setTimeOfDay(cursor.getString(5));" + cursor.getString(5));
 						diary.setRate(cursor.getString(6));
-						System.out.println("diary.setRate(cursor.getString(6));" + cursor.getString(6));
 						diaryList.add(diary);
 
 					}

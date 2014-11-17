@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mainbackground"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.treatmentdiary.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+  <TextView
+      android:id="@+id/textRateHelpText"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:minHeight="50dp"
+      android:paddingBottom="10dp"
+      android:text="The only thing that remains is to rate your treatment! How will you rate"
+      android:textAlignment="center"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textColor="#000"
+      android:textSize="20sp" />
+  
+    <TextView
+        android:id="@+id/textRateTreatmentName"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:minHeight="50dp"
+        android:paddingBottom="10dp"
+        android:text="Exampletreatment"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#4ba9c8"
+        android:textSize="20sp" />
+
+        <RatingBar
+            android:id="@+id/rateTreatment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <Button
+            android:id="@+id/rateButton"
+            android:background="@xml/rounded_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Rate" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -10,26 +10,43 @@ public class Treatment {
 	private String method;
 	private String started;
 	private String expectedTime;
+	private int isOld;
+	private int rating;
 	protected List<Diary> list;
 	
 	public Treatment(){}
 	
-	public Treatment(String n, String m, String s, String et)
+	public Treatment(String n, String m, String s, String et, int io, int r)
 	{
 		name = n;
 		method = m;
 		started = s;
 		expectedTime = et;
+		isOld = io;
+		rating = r;
 		list = new ArrayList<Diary>();
 	}
 	
-	public Treatment(int i, String n, String m, String s, String et)
+	public Treatment(String n, String m, String s, String et, int io)
+	{
+		name = n;
+		method = m;
+		started = s;
+		expectedTime = et;
+		isOld = io;
+
+		list = new ArrayList<Diary>();
+	}
+	
+	public Treatment(int i, String n, String m, String s, String et, int io, int r)
 	{
 		id = i;
 		name = n;
 		method = m;
 		started = s;
 		expectedTime = et;
+		isOld = io;
+		rating = r;
 		list = new ArrayList<Diary>();
 	}
 	
@@ -86,6 +103,26 @@ public class Treatment {
 	public void setExpectedTime(String et)
 	{
 		expectedTime = et;
+	}
+	
+	public int getIsOld()
+	{
+		return isOld;
+	}
+	
+	public void setIsOld(int io)
+	{
+		isOld = io;
+	}
+	
+	public int getRating()
+	{
+		return rating;
+	}
+	
+	public void setRating(int r)
+	{
+		rating = r;
 	}
 	
 

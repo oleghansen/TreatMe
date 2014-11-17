@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mainbackground"
+    android:padding="0dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.birthdaysms.TreatmentList" >
+
+    <LinearLayout
+        android:id="@+id/linearMenuTreatments"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#3e96b7"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:id="@+id/textTitleTreatments"
+            android:layout_width="238dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.85"
+            android:gravity="center_horizontal"
+            android:text="Treatment history"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/treatmentsListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearMenuTreatments"
+        android:divider="#676767"
+        android:dividerHeight="0.5dip" >
+
+    </ListView>
+    
+
+</RelativeLayout>

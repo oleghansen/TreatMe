@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	public final static int CURRENTTREATMENTSRESULT = 1, USEDTREATMENTSRESULT = 2;
+	public static int old;
 	private ImageButton barBackButton, usedTreatmentsButton, treatmentsButton;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
@@ -35,9 +36,9 @@ public class MainActivity extends Activity {
 		if(db.findAllTreatments().isEmpty())
 		{
 			
-			db.addTreatment(new Treatment("Basiron (eksempel)", "Acne", "01-01-2014", "2 Week(s)"));
-			db.addTreatment(new Treatment("Paracet", "Hodepine", "30-12-2012", "33 Days"));
-			db.addTreatment(new Treatment("Grønn te", "Humør", "30-10-2010", "1 Year(s)"));
+			db.addTreatment(new Treatment("Basiron (eksempel)", "Acne", "01-01-2014", "2 Week(s)", 0, 0));
+			db.addTreatment(new Treatment("Paracet", "Hodepine", "30-12-2012", "33 Days", 0, 0));
+			db.addTreatment(new Treatment("Grønn te", "Humør", "30-10-2010", "1 Year(s)", 1, 4));
 		}
 		
 		Treatment hei = db.findTreatment(1);
@@ -88,12 +89,16 @@ public class MainActivity extends Activity {
 	     {
 	         switch(v.getId()){
 	             case R.id.currentTreatmentsButton:
-						Intent showCurrentTreatments = new Intent("com.example.treatmentdiary.TREATMENTLIST");
-						startActivityForResult(showCurrentTreatments, CURRENTTREATMENTSRESULT);
+	            	 	old = 1;
+						Intent showTreatments = new Intent("com.example.treatmentdiary.TREATMENTLIST");
+						startActivityForResult(showTreatments, CURRENTTREATMENTSRESULT);
+						
 	             break;
 	             case R.id.usedTreatmentsButton:
-	            	 	Intent showUsedTreatments = new Intent("com.example.treatmentdiary.USEDTREATMENTLIST");
-	            	 	startActivityForResult(showUsedTreatments, USEDTREATMENTSRESULT);
+	            	 	old = 2;
+	            	 	Intent showOldTreatments = new Intent("com.example.treatmentdiary.TREATMENTLIST");
+	            	 	startActivityForResult(showOldTreatments, USEDTREATMENTSRESULT);
+	            	 	
 	             break;
 	         }
 	     }
