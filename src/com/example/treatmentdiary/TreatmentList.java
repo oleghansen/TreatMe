@@ -3,6 +3,7 @@ package com.example.treatmentdiary;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -254,6 +255,8 @@ public class TreatmentList extends Activity
 		inOld = false;
 		update = false;
 		setContentView(R.layout.treatments);
+		titleTV = (TextView)findViewById(R.id.textTitleTreatments);
+		titleTV.setTypeface(customFont);
 		manageButtonTreatments = (ImageButton)findViewById(R.id.menuManageButtonTreatments);
 		addButtonTreatments = (ImageButton)findViewById(R.id.menuAddButtonTreatments);
 		manageButtonTreatments.setOnClickListener(onClickListener);
@@ -292,7 +295,7 @@ public class TreatmentList extends Activity
 	{
 			nyTreatment = false;
 			setContentView(R.layout.treatment_details);
-			dateTreatmentET = (EditText)findViewById(R.id.etDateTreatment);
+			dateET = (EditText)findViewById(R.id.etDateTreatment);
 			durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
 			durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
 			
@@ -332,12 +335,12 @@ public class TreatmentList extends Activity
 			optionalTreatmentTV.setTypeface(customFont);
 			nameET.setTypeface(customFont);
 			methodET.setTypeface(customFont);
-			dateTreatmentET.setTypeface(customFont);
+			dateET.setTypeface(customFont);
 			
 			titleTV.setText(selectedTreatment.getName());
 			nameET.setText(selectedTreatment.getName());
 			methodET.setText(selectedTreatment.getMethod());
-			dateTreatmentET.setText(selectedTreatment.getStarted());
+			dateET.setText(selectedTreatment.getStarted());
 			if(!(selectedTreatment.getExpectedTime() == null || selectedTreatment.getExpectedTime().isEmpty()))
 			{
 				int res = 0;
@@ -399,11 +402,13 @@ public class TreatmentList extends Activity
 		setContentView(R.layout.treatment_details);
 		addButton = (ImageButton)findViewById(R.id.menuAddButtonNewTreatment);
 		addButton.setOnClickListener(onClickListener);
-		dateTreatmentET = (EditText)findViewById(R.id.etDateTreatment);
+		dateET = (EditText)findViewById(R.id.etDateTreatment);
+		dateET.setOnClickListener(onClickListener);
 		durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
 		durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
 		
 		titleTV = (TextView)findViewById(R.id.textTitle);
+		titleTV.setText("New treatment");
 		dateTreatmentTV = (TextView)findViewById(R.id.tvDateTreatment);
 		durationTreatmentTV = (TextView)findViewById(R.id.tvDuration);
 		optionalTreatmentTV = (TextView)findViewById(R.id.tvOptional);
@@ -420,19 +425,19 @@ public class TreatmentList extends Activity
 		optionalTreatmentTV.setTypeface(customFont);
 		nameET.setTypeface(customFont);
 		methodET.setTypeface(customFont);
-		dateTreatmentET.setTypeface(customFont);
+		dateET.setTypeface(customFont);
 	}
 	
 	private void addTreatment()
 	{
-		db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateTreatmentET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
+		db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
 	}
 	
 	private void updateTreatment(Treatment treatment)
 	{
 		Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " updated.", Toast.LENGTH_SHORT);
 		updateToast.show();
-		Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateTreatmentET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
+		Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
 		db.updateTreatment(treatment, updated);
 	}
 	
@@ -530,6 +535,7 @@ public class TreatmentList extends Activity
 	             break;
 	             
 		         case R.id.etDate:
+		         case R.id.etDateTreatment:
 			 			showDialog(dialog_id);
 			 	 break;
 	         }
@@ -674,11 +680,15 @@ public class TreatmentList extends Activity
 		titleET = (EditText)findViewById(R.id.etTitle);
 		titleTV = (TextView)findViewById(R.id.textTitle);
 		textET = (EditText)findViewById(R.id.etText);
+		todTv = (TextView)findViewById(R.id.tvTod);
+		dateTv = (TextView)findViewById(R.id.tvDate);
 		
 		titleTV.setTypeface(customFont);
 		titleET.setTypeface(customFont);
 		textET.setTypeface(customFont);
 		dateET.setTypeface(customFont);
+		todTv.setTypeface(customFont);
+		dateTv.setTypeface(customFont);
 		
 		
 		todSpinner = (Spinner)findViewById(R.id.spinnerTod);
@@ -686,9 +696,15 @@ public class TreatmentList extends Activity
 		ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.timesofday, android.R.layout.simple_spinner_item);
 		todSpinner.setAdapter(adapter);
 		todSpinner.setPopupBackgroundResource(R.drawable.spinner);
-		dateET.setText("");
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		String now = sdf.format(c.getTime());
+		
+		dateET.setText(now);
 		titleTV.setText("");
-		titleET.setText("New note");
+		titleET.setText("");
+		textET.setText("");
 		
 		dateET.setHint("Date");
 		titleET.setHint("Title");
@@ -701,7 +717,7 @@ public class TreatmentList extends Activity
 	/* Diary: Add, delete, update */
 	private void addNote()
 	{
-		dbDiary.addDiary(new Diary(dateET.getText().toString(),titleET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
+		dbDiary.addDiary(new Diary(titleET.getText().toString(),dateET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
 	}
 	
 	private void deleteNote(Diary note)
@@ -784,6 +800,7 @@ public class TreatmentList extends Activity
 			if(itemView == null)
 			{
 				itemView = getLayoutInflater().inflate(R.layout.diary_view, parent, false);
+			}
 				Diary currentNote = notes.get(position);
 				TextView textMake = (TextView)itemView.findViewById(R.id.txtMake);
 				TextView textDesc = (TextView)itemView.findViewById(R.id.textListDesc);
@@ -797,6 +814,7 @@ public class TreatmentList extends Activity
 				ratingBarList.setRating(Float.valueOf(currentNote.getRate()));
 				textDesc.setText(currentNote.getDescription());
 				textDate.setText(currentNote.getDate());
+				
 				if(currentNote.getTitle() == null || currentNote.getTitle().isEmpty())
 				{
 					textMake.setText("(Tom)");
@@ -806,20 +824,10 @@ public class TreatmentList extends Activity
 					textMake.setText(currentNote.getTitle());
 				}
 				
-				
-				return itemView;
-			}
-			else
-			{
-				itemView = getLayoutInflater().inflate(R.layout.diary_view, parent, false);
-				Diary currentNote = notes.get(position);
-				TextView textMake = (TextView)itemView.findViewById(R.id.txtMake);
-				textMake.setText(currentNote.getTitle());
-				textMake.setTypeface(customFont);
 				return itemView;
 			}
 		}
-	}
+
 	
 	/*TimePicker dialog*/
 	protected Dialog onCreateDialog(int id)
@@ -843,7 +851,7 @@ public class TreatmentList extends Activity
 					yr = year;
 					month = monthOfYear;
 					day = dayOfMonth;
-					dateET.setText(day + "/" + (month+1) + "/" + (year));
+					dateET.setText(day + "-" + (month+1) + "-" + (year));
 					
 				}
 			};

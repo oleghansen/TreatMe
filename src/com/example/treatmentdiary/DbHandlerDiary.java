@@ -60,7 +60,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public	List<Diary> findDiaryNotes(Treatment treatment){
 		diaryList = new ArrayList<Diary>();
-		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY DATE DESC";
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY  SUBSTR(DATE('NOW'), 6)>(SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)), (SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)) DESC";
 		System.out.println("Forsøker å finne note med treatmentId" + treatment.getId());
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -74,8 +74,8 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 						Diary diary = new Diary();
 						diary.setId(Integer.parseInt(cursor.getString(0)));
 						diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
-						diary.setTitle(cursor.getString(2));
-						diary.setDate(cursor.getString(3));
+						diary.setDate(cursor.getString(2));
+						diary.setTitle(cursor.getString(3));
 						diary.setDescription(cursor.getString(4));
 						diary.setTimeOfDay(cursor.getString(5));
 						diary.setRate(cursor.getString(6));
@@ -111,8 +111,8 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_TID, treatment.getId());
-		values.put(KEY_TITLE, diary.getTitle());
 		values.put(KEY_DATE,diary.getDate());
+		values.put(KEY_TITLE, diary.getTitle());
 		values.put(KEY_TEXT, diary.getDescription());
 		values.put(KEY_TIMEOFDAY, diary.getTimeOfDay());
 		values.put(KEY_RATE, diary.getRate());
@@ -125,8 +125,8 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(KEY_TITLE, updated.getTitle());
 		values.put(KEY_DATE,updated.getDate());
+		values.put(KEY_TITLE, updated.getTitle());
 		values.put(KEY_TEXT, updated.getDescription());
 		values.put(KEY_TIMEOFDAY, updated.getTimeOfDay());
 		values.put(KEY_RATE, updated.getRate());

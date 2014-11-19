@@ -21,7 +21,7 @@
         <ImageButton
             android:id="@+id/menuManageButtonTreatments"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:background="@null"
             android:src="@android:drawable/ic_menu_manage" />
 
@@ -29,7 +29,7 @@
             android:id="@+id/textTitleTreatments"
             android:layout_width="238dp"
             android:layout_height="fill_parent"
-            android:layout_weight="0.85"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="My treatments"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -38,8 +38,7 @@
         <ImageButton
             android:id="@+id/menuAddButtonTreatments"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="fill_parent"
             android:background="@null"
             android:src="@android:drawable/ic_menu_add" />
     </LinearLayout>
@@ -48,6 +47,7 @@
         android:id="@+id/treatmentsListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#99FFFFFF"
         android:layout_below="@+id/linearMenuTreatments"
         android:divider="#676767"
         android:dividerHeight="0.5dip" >

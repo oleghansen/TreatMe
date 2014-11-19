@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
+    android:background="@drawable/mainbackground"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
@@ -9,6 +10,7 @@
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#99FFFFFF"
         android:layout_below="@+id/linearLayout1" >
 
         <LinearLayout
@@ -36,7 +38,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:text="Starting date"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white_opaque" />
 
                     <EditText
                         android:id="@+id/etDateTreatment"
@@ -44,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:inputType="date"
-                        android:textColor="#ffffff" >
+                        android:textColor="@color/white_opaque" >
                         <requestFocus />
                     </EditText>
                 </LinearLayout>
@@ -63,7 +66,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="0.31"
                         android:text="Duration"
-                                                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white_opaque" />
                     
                     <TextView
                         android:id="@+id/tvOptional"
@@ -73,6 +77,7 @@
                         android:layout_marginLeft="0dp"
                         android:layout_weight="0.31"
                         android:text="(optional)"
+                        android:textColor="@color/white_opaque"
                         android:textSize="14sp" />
 
                     <EditText
@@ -82,6 +87,7 @@
                         android:layout_weight="1"
                         android:hint="(#)"
                         android:inputType="number"
+                        android:textColor="@color/white_opaque"
                         android:textSize="14sp" >
 
                     </EditText>
@@ -94,29 +100,39 @@
 
                     
                 </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="220dp"
-                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:orientation="vertical" >
 
-                <EditText
-                    android:id="@+id/etName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:ems="10"
-                    android:hint="Condition" />
-                   <EditText
-                    android:id="@+id/etMethod"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:ems="10"
-                    android:hint="Treatment/medicine" />
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="#F0F0F0"
+                        android:ems="10"
+                        android:hint="Condition"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp" />
+
+                    <EditText
+                        android:id="@+id/etMethod"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="#F0F0F0"
+                        android:ems="10"
+                        android:hint="Treatment/medicine"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
