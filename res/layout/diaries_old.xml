@@ -18,6 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/linearLayout"
         android:divider="#000000"
+        android:background="#99FFFFFF"
         android:dividerHeight="0.5dip" >
 
     </ListView>

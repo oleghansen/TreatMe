@@ -54,8 +54,8 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public void resetDatabase()
 	{
-		//SQLiteDatabase db = this.getWritableDatabase();
-		//db.execSQL("DELETE * FROM TABLE_TREATMENT);
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("DELETE FROM " + TABLE_DIARY);
 	}
 	
 	public	List<Diary> findDiaryNotes(Treatment treatment){

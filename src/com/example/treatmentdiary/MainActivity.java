@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,14 +25,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	static final double LatitudeOSLO=59.87894;
 	static final double LangitudeOSLO=10.78142;
 	
-	public final static int CURRENTTREATMENTSRESULT = 1, USEDTREATMENTSRESULT = 2;
+	public final static int CURRENTTREATMENTSRESULT = 1, USEDTREATMENTSRESULT = 2, AVSLUTTAPPRESULT = 99;
 	public static int old;
-	private ImageButton barBackButton, usedTreatmentsButton, treatmentsButton, findPharmacyButton;
+	private ImageButton barBackButton, usedTreatmentsButton, treatmentsButton, findPharmacyButton, prefsButton;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Typeface customFont;
@@ -71,7 +73,9 @@ public class MainActivity extends Activity {
 		treatmentsButton = (ImageButton)findViewById(R.id.currentTreatmentsButton);
 		usedTreatmentsButton = (ImageButton)findViewById(R.id.usedTreatmentsButton);
 		findPharmacyButton = (ImageButton)findViewById(R.id.findPharmacyButton);
+		prefsButton = (ImageButton)findViewById(R.id.settingsButton);
 		
+		prefsButton.setOnClickListener(onClickListener);
 		treatmentsButton.setOnClickListener(onClickListener);
 		usedTreatmentsButton.setOnClickListener(onClickListener);
 		findPharmacyButton.setOnClickListener(onClickListener);
@@ -80,33 +84,48 @@ public class MainActivity extends Activity {
 		
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == AVSLUTTAPPRESULT)
+		{
+			finish();
+		}
+	}
+	
 	private void getLatitudeLongitude()
 	{
+			Criteria criteria=new Criteria();
+			criteria.setAccuracy(Criteria.NO_REQUIREMENT);
+			criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
+		
 		    LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE); 
-		    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		    
-	
-		        showMyAddress(location);
+		    String provider=lm.GPS_PROVIDER;
+		    Location location = lm.getLastKnownLocation(provider);
+
+		    showMyAddress(location);
+		   
 		
 		    
 		    final LocationListener locationListener = new LocationListener() {
 		    	@Override
 		        public void onLocationChanged(Location location) {
-		        	showMyAddress(location);
+		    			  showMyAddress(location);
 		        }
 
 		        public void onProviderDisabled(String arg0) {
-		            // TODO Auto-generated method stub
+		        	showMyAddress(null);
 
 		        }
 
 		        public void onProviderEnabled(String arg0) {
-		            // TODO Auto-generated method stub
+		        	showMyAddress(null);
 
 		        }
 
 		        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		            // TODO Auto-generated method stub
+		        	showMyAddress(null);
 
 		        }
 		    };
@@ -116,20 +135,12 @@ public class MainActivity extends Activity {
 	}
 	
 	private void showMyAddress(Location location) {
-	    double latitude = location.getLatitude();
-	    double longitude = location.getLongitude();
-	    Geocoder myLocation = new Geocoder(getApplicationContext(), Locale.getDefault());   
-	    
-	    List<Address> latlongList = new ArrayList<Address>();
-	    try {
-	        latlongList = myLocation.getFromLocation(latitude, longitude, 1);
-	        System.out.println(latlongList.get(0).toString());
-
-	    } catch (IOException e1) {
-	        // TODO Auto-generated catch block
-	    	System.out.println("IOException");
-	        e1.printStackTrace();
-	    }
+		if (location != null){
+			double lo=location.getLongitude();
+			double lat=location.getLatitude();
+			String latlongtekst="Longitude: " + lo + "\n" + "Latitude:" + lat;
+			System.out.println(latlongtekst);
+		}
 	}
 	
 	
@@ -142,7 +153,7 @@ public class MainActivity extends Activity {
 	
 	private void findPharmacy()
 	{
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps?q=Pharmacy&hl=no"));
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps/search/Pharmacy/@59.9192167,10.7350791,14z?hl=no"));
 		startActivity(browserIntent);
 	}
 
@@ -176,8 +187,14 @@ public class MainActivity extends Activity {
 	            	 	
 	             break;
 	             case R.id.findPharmacyButton:
-	            	 getLatitudeLongitude();
+	            	 Intent gpsactivity = new Intent("com.example.treatmentdiary.GPSACTIVITY");
+	            	  startActivity(gpsactivity);
+	            	 	
+	            	//findPharmacy();
 	             break;
+	             case R.id.settingsButton:
+	            	 Intent prefs = new Intent("com.example.treatmentdiary.PREFS");
+	            	 startActivity(prefs);
 	         }
 	     }
 	};

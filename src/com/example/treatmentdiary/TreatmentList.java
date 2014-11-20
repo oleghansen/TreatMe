@@ -3,8 +3,9 @@ package com.example.treatmentdiary;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,6 +53,21 @@ public class TreatmentList extends Activity
 	private int yr, day, month;
 	private boolean inOld;
 	
+	private int layout_position; 
+	//treatmentlist: 1
+	//treatment details: 11
+	// treatment rating: 111
+	
+	//old treatmentlist: 2
+	// old treatment detials: 22
+	
+	//diary list: 3
+	//diary add/details: 33
+
+	
+	
+	
+	
 	private Typeface customFont;
 	private TextView titleTV;
 	private ImageButton deleteButton, manageButton, addButton, manageButtonTreatments, addButtonTreatments;
@@ -61,7 +78,7 @@ public class TreatmentList extends Activity
 	private EditText dateET, titleET, textET, dateTreatmentET, durationNumberTreatmentET, nameET, methodET;
 	private Spinner todSpinner, durSpinner;
 	private RatingBar ratingBar, ratingBarTreatments, ratingBarRate;
-	private ImageButton barBackButton;
+	private ImageButton barBackButton, barExitButton;
 	
 	private boolean nyDiary, nyTreatment, update;
 
@@ -97,6 +114,10 @@ public class TreatmentList extends Activity
 		barBackButton = (ImageButton)findViewById(R.id.actionBackButton);
 		barBackButton.setVisibility(View.VISIBLE);
 		barBackButton.setOnClickListener(onClickListener);
+		
+		barExitButton = (ImageButton)findViewById(R.id.actionExitButton);
+		barExitButton.setVisibility(View.VISIBLE);
+		barExitButton.setOnClickListener(onClickListener);
 	}
 
 	private void registerClickCallback() {
@@ -134,7 +155,7 @@ public class TreatmentList extends Activity
 			dialogBuilder = new AlertDialog.Builder(this);
 			dialogBuilder.setTitle(treatment.getName());
 			
-			dialogBuilder.setPositiveButton(("Settings"), new DialogInterface.OnClickListener()
+			dialogBuilder.setPositiveButton(("Edit"), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -164,7 +185,7 @@ public class TreatmentList extends Activity
 			dialogBuilder = new AlertDialog.Builder(this);
 			dialogBuilder.setTitle(treatment.getName());
 			
-			dialogBuilder.setPositiveButton(("Settings"), new DialogInterface.OnClickListener()
+			dialogBuilder.setPositiveButton(("Edit"), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -252,6 +273,7 @@ public class TreatmentList extends Activity
 	
 	private void loadTreatmentList()
 	{
+		layout_position = 1;
 		inOld = false;
 		update = false;
 		setContentView(R.layout.treatments);
@@ -270,11 +292,12 @@ public class TreatmentList extends Activity
 	
 	private void loadOldTreatmentList()
 	{
+		layout_position = 2;
 		inOld = true;
 		update = false;
 		setContentView(R.layout.treatments_old);
-		
-		
+		titleTV = (TextView)findViewById(R.id.textTitleTreatments);
+		titleTV.setTypeface(customFont);
 		fillOldTreatmentList();
 		fillListView();
 		registerClickCallback();
@@ -293,6 +316,17 @@ public class TreatmentList extends Activity
 	
 	private void loadTreatmentDetails(Treatment treatment)
 	{
+			if(layout_position == 1)
+			{
+				System.out.println("setter til 11");
+				layout_position = 11;
+			}
+			else if(layout_position == 2)
+			{
+				System.out.println("setter til 22");
+				layout_position = 22;
+			}
+			
 			nyTreatment = false;
 			setContentView(R.layout.treatment_details);
 			dateET = (EditText)findViewById(R.id.etDateTreatment);
@@ -373,6 +407,8 @@ public class TreatmentList extends Activity
 	
 	private void loadTreatmentRating(Treatment treatment)
 	{
+		layout_position = 111;
+
 		setContentView(R.layout.treatment_rating);
 		textRateHelp = (TextView)findViewById(R.id.textRateHelpText);
 		textRateName = (TextView)findViewById(R.id.textRateTreatmentName);
@@ -398,6 +434,8 @@ public class TreatmentList extends Activity
 	
 	private void loadAddTreatment()
 	{
+		layout_position = 11;
+		
 		nyTreatment = true;
 		setContentView(R.layout.treatment_details);
 		addButton = (ImageButton)findViewById(R.id.menuAddButtonNewTreatment);
@@ -428,17 +466,174 @@ public class TreatmentList extends Activity
 		dateET.setTypeface(customFont);
 	}
 	
+	private void quitAppDialog()
+	{
+		dialogBuilder = new AlertDialog.Builder(this);
+		dialogBuilder.setCancelable(false);
+		dialogBuilder.setTitle("Quit?");
+		dialogBuilder.setMessage("You have unsaved changes. Are you sure you want to quit?");
+		
+		dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which)
+			{
+ 				setResult(99);
+ 				finish();
+			}
+		});
+		
+		dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which)
+			{
+				
+				dialog.dismiss();
+			}
+		});
+		
+		AlertDialog alert = dialogBuilder.create();
+		alert.show();
+		
+	}
+	private boolean addTreatmentValidation()
+	{
+		int validatedFields = 0;
+		
+		//Validate form//
+		//***************************
+		//Treatment/Medicine-field//
+				if(2 < methodET.getText().toString().length() &&  methodET.getText().toString().length() < 20
+						){
+					methodET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					methodET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Condition-field//
+			if(2 < nameET.getText().toString().length() &&  nameET.getText().toString().length() < 20)
+				{
+					nameET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					nameET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Date-field//
+			if(!dateET.getText().toString().equals(""))
+			{
+				validatedFields++;
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+			}
+			
+			//************************
+			//Field summary and result//
+			
+			if(validatedFields==3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+	}
 	private void addTreatment()
 	{
-		db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
+		if(addTreatmentValidation())
+		{
+			Toast.makeText(getApplicationContext(), nameET.getText().toString() + " added" , Toast.LENGTH_SHORT).show();
+			db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
+			loadTreatmentList();
+		}
+	}
+	
+	private boolean isValidString(String name) 
+	{
+		String NAME_PATTERN = "^[a-zA-Z\\s.]+";
+
+		Pattern pattern = Pattern.compile(NAME_PATTERN);
+		Matcher matcher = pattern.matcher(name);
+		return matcher.matches();
+	}
+	
+	
+	private boolean updateTreatmentValidation()
+	{
+     int validatedFields = 0;
+		
+		//Validate form//
+		//***************************
+		//Treatment/Medicine-field//
+				if(2 < methodET.getText().toString().length() &&  methodET.getText().toString().length() < 20
+						){
+					methodET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					methodET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Condition-field//
+			if(2 < nameET.getText().toString().length() &&  nameET.getText().toString().length() < 20)
+				{
+					nameET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					nameET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Date-field//
+			if(!dateET.getText().toString().equals(""))
+			{
+				validatedFields++;
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+			}
+			
+			//************************
+			//Field summary and result//
+			
+			if(validatedFields==3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 	}
 	
 	private void updateTreatment(Treatment treatment)
 	{
-		Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " updated.", Toast.LENGTH_SHORT);
-		updateToast.show();
-		Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
-		db.updateTreatment(treatment, updated);
+		if(updateTreatmentValidation())
+		{
+			Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " updated.", Toast.LENGTH_SHORT);
+			updateToast.show();
+			Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
+			db.updateTreatment(treatment, updated);
+			loadTreatmentList();
+		}
 	}
 	
 	private void deleteTreatment(Treatment treatment)
@@ -448,9 +643,13 @@ public class TreatmentList extends Activity
 	
 	private void loadDiaryList()
 	{
+		nyDiary = false;
+		layout_position = 3;
+		
 		update = false;
 		if(inOld)
 		{
+			
 			setContentView(R.layout.diaries_old);
 			titleTV = (TextView)findViewById(R.id.textTitle);
 			titleTV.setText(selectedTreatment.getName());
@@ -496,12 +695,10 @@ public class TreatmentList extends Activity
 	            	 if(nyTreatment)
 	            	 {
 	            		 addTreatment();
-	            		 loadTreatmentList();
 	            	 }
 	            	 else
 	            	 {
 	            		 updateTreatment(selectedTreatment);
-	            		 loadTreatmentList();
 	            	 }
 	             break;
 	             case R.id.menuManageButtonTreatments:
@@ -511,30 +708,64 @@ public class TreatmentList extends Activity
 	            	 if(nyDiary)
 	            	 {
 		 	     			addNote();
-		 	     			filldiaryList(selectedTreatment);
-			    			loadDiaryList();
 	            	 }
 	            	 else
 	            	 {
 	            		    if(update)
 	            		    {
 	            		    	updateNote(selectedNote);
-	            		    	filldiaryList(selectedTreatment);
-	            		    	loadDiaryList();
 	            		    }
 	            		    else
 	            		    {
 		            		    loadAddNote();
 	            		    }
-
 	            	 }
-
 	             break;
 	             case R.id.actionBackButton:
-	            	 finish();
+	            	  switch(layout_position){
+	            	  case 1:
+	            	  case 2:
+	            		  finish();
+	            	  break;
+	            	  case 11:
+	            	  case 3:
+	            		  if(inOld)
+	            		  {
+	            			  loadOldTreatmentList();
+	            		  }	  
+	            		  else
+	            		  {
+	            			  loadTreatmentList();
+	            		  }
+	            	  break;
+	            	  case 111:
+	            		  loadTreatmentDetails(selectedTreatment);
+	            	  break;
+	            	  case 22:
+	            		  loadOldTreatmentList();
+	            	  break;
+	            	  case 33:
+	            		  loadDiaryList();
+	            	  break;
+	            	  default:
+	            		  finish();
+	            	  }
+	             break;
+	             case R.id.actionExitButton:
+	            	if(layout_position == 11 || layout_position == 22 || layout_position == 33 )
+	            	{
+	     				quitAppDialog();
+	            	}
+	            	else
+	            	{
+	     				setResult(99);
+	     				finish();
+	            	}
 	             break;
 	             
 		         case R.id.etDate:
+		        	 showDialog(dialog_id);
+		        break;
 		         case R.id.etDateTreatment:
 			 			showDialog(dialog_id);
 			 	 break;
@@ -561,6 +792,12 @@ public class TreatmentList extends Activity
 			});
 	}
 
+	
+	@Override
+	public void onBackPressed() {
+		barBackButton.performClick();
+	}
+
 	private void fillDiaryListView()
 	{
 		ArrayAdapter<Diary> diaryAdapter = new MyDiaryAdapter();
@@ -573,6 +810,8 @@ public class TreatmentList extends Activity
 	/* Note details */
 	private void loadNoteDetails(Diary note)
 	{
+		layout_position = 33;
+		
 		update = true;
 		nyDiary = false;
 		setContentView(R.layout.diary_note);
@@ -660,6 +899,8 @@ public class TreatmentList extends Activity
 	/* Note add */
 	private void loadAddNote()
 	{
+		layout_position = 33;
+		
 		nyDiary = true;
 		
 		setContentView(R.layout.diary_note);
@@ -714,10 +955,72 @@ public class TreatmentList extends Activity
 		addButton.setOnClickListener(onClickListener);
 	}
 	
+	private boolean addNoteValidation()
+	{
+	int validatedFields = 0;
+		
+		//Validate form//
+		//***************************
+		//Title-field//
+				if(1 < titleET.getText().toString().length() &&  titleET.getText().toString().length() < 20)
+				{
+					titleET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					titleET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Text-field//
+			if(textET.getText().toString().length() > 1 && textET.getText().toString().length() < 220)
+				{
+					textET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					textET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Date-field//
+			if(!dateET.getText().toString().equals(""))
+			{
+				validatedFields++;
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+			}
+			
+			//************************
+			//Field summary and result//
+			
+			if(validatedFields==3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+	}
+	
 	/* Diary: Add, delete, update */
 	private void addNote()
 	{
-		dbDiary.addDiary(new Diary(titleET.getText().toString(),dateET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
+		if(addNoteValidation())
+		{
+			Toast.makeText(getApplicationContext(), titleET.getText().toString() + " added." , Toast.LENGTH_SHORT).show();
+			dbDiary.addDiary(new Diary(titleET.getText().toString(),dateET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
+  			filldiaryList(selectedTreatment);
+			loadDiaryList();
+		}
+		
 	}
 	
 	private void deleteNote(Diary note)
@@ -727,12 +1030,73 @@ public class TreatmentList extends Activity
 		dbDiary.deleteNote(note);
 	}
 	
+	
+	private boolean updateNoteValidation()
+	{
+	int validatedFields = 0;
+		
+		//Validate form//
+		//***************************
+		//Title-field//
+				if(1 < titleET.getText().toString().length() &&  titleET.getText().toString().length() < 20)
+				{
+					titleET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					titleET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Text-field//
+			if(textET.getText().toString().length() > 1 && textET.getText().toString().length() < 220)
+				{
+					textET.setBackgroundColor(Color.parseColor("#ffffff"));
+					validatedFields++;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					textET.setBackgroundColor(Color.parseColor("#ffa9a9"));
+				}
+			
+			//***************************
+			//Date-field//
+			if(!dateET.getText().toString().equals(""))
+			{
+				validatedFields++;
+			}
+			else
+			{
+				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+			}
+			
+			//************************
+			//Field summary and result//
+			
+			if(validatedFields==3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+	}
 	private void updateNote(Diary note)
 	{
-		Toast updateToast = Toast.makeText(getApplicationContext(), "'"+note.getTitle() + "'" + " updated.", Toast.LENGTH_SHORT);
-		updateToast.show();
-		Diary updated = new Diary(dateET.getText().toString(),titleET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating()));
-		dbDiary.updateNote(note, updated);
+		if(updateNoteValidation())
+		{
+			Toast updateToast = Toast.makeText(getApplicationContext(), "'"+note.getTitle() + "'" + " updated.", Toast.LENGTH_SHORT);
+			updateToast.show();
+			Diary updated = new Diary(titleET.getText().toString(),dateET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating()));
+			dbDiary.updateNote(note, updated);
+	    	filldiaryList(selectedTreatment);
+	    	loadDiaryList();
+		}
+
 	}
 	
 	
@@ -784,7 +1148,6 @@ public class TreatmentList extends Activity
 			return itemView;
 		}
 	}
-	
 	private class MyDiaryAdapter extends ArrayAdapter<Diary>
 	{
 		
@@ -836,7 +1199,7 @@ public class TreatmentList extends Activity
 		{
 		case dialog_id:
 			System.out.println(day + " " + month + " " + yr);
-			return new DatePickerDialog(this,mDateSetListener, 2013, day, month);
+			return new DatePickerDialog(this,mDateSetListener, 2014, month, day);
 		}
 		return null;
 	}

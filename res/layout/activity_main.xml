@@ -13,18 +13,20 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_marginTop="50dp" >
 
             <ImageButton
                 android:id="@+id/currentTreatmentsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="47dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/btn_treatments" />
 
@@ -32,7 +34,9 @@
                 android:id="@+id/usedTreatmentsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="47dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/btn_old_treatments" />
 
@@ -41,17 +45,27 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
+            >
 
             <ImageButton
                 android:id="@+id/findPharmacyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="47dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/btn_pharmacy" />
+            
+               <ImageButton
+                   android:id="@+id/settingsButton"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_weight="1"
+                   android:background="@null"
+                   android:src="@drawable/btn_prefs" />
 
         </LinearLayout>
 
