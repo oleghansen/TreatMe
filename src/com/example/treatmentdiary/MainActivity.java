@@ -2,30 +2,18 @@ package com.example.treatmentdiary;
 
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
 
+import java.util.Random;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class MainActivity extends Activity {
 	static final double LatitudeOSLO=59.87894;
@@ -37,7 +25,6 @@ public class MainActivity extends Activity {
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Typeface customFont;
-	private double latitude, longitude;
 	
 
 	@Override
@@ -94,56 +81,6 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	private void getLatitudeLongitude()
-	{
-			Criteria criteria=new Criteria();
-			criteria.setAccuracy(Criteria.NO_REQUIREMENT);
-			criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-		
-		    LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE); 
-		    String provider=lm.GPS_PROVIDER;
-		    Location location = lm.getLastKnownLocation(provider);
-
-		    showMyAddress(location);
-		   
-		
-		    
-		    final LocationListener locationListener = new LocationListener() {
-		    	@Override
-		        public void onLocationChanged(Location location) {
-		    			  showMyAddress(location);
-		        }
-
-		        public void onProviderDisabled(String arg0) {
-		        	showMyAddress(null);
-
-		        }
-
-		        public void onProviderEnabled(String arg0) {
-		        	showMyAddress(null);
-
-		        }
-
-		        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		        	showMyAddress(null);
-
-		        }
-		    };
-
-		    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-
-	}
-	
-	private void showMyAddress(Location location) {
-		if (location != null){
-			double lo=location.getLongitude();
-			double lat=location.getLatitude();
-			String latlongtekst="Longitude: " + lo + "\n" + "Latitude:" + lat;
-			System.out.println(latlongtekst);
-		}
-	}
-	
-	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -151,12 +88,6 @@ public class MainActivity extends Activity {
 		barBackButton.setVisibility(View.INVISIBLE);
 	}
 	
-	private void findPharmacy()
-	{
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps/search/Pharmacy/@59.9192167,10.7350791,14z?hl=no"));
-		startActivity(browserIntent);
-	}
-
 	private void getCustomActionBar()
 	{
 		getActionBar().setCustomView(R.layout.custom_actionbar);
@@ -190,7 +121,6 @@ public class MainActivity extends Activity {
 	            	 Intent gpsactivity = new Intent("com.example.treatmentdiary.GPSACTIVITY");
 	            	  startActivity(gpsactivity);
 	            	 	
-	            	//findPharmacy();
 	             break;
 	             case R.id.settingsButton:
 	            	 Intent prefs = new Intent("com.example.treatmentdiary.PREFS");

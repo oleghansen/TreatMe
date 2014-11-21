@@ -41,6 +41,7 @@ public class GpsActivity extends Activity implements LocationListener{
 	            public void onReceivedError(WebView view, int errorCode,
 	                String description, String failingUrl) {
 	                view.loadUrl("about:blank");
+	                setContentView(R.layout.activity_main);
 	                Toast.makeText(getApplicationContext(), "Opening browser..", Toast.LENGTH_SHORT).show();
 	                openBrowserMap();
 	                super.onReceivedError(view, errorCode, description, failingUrl);
@@ -51,8 +52,18 @@ public class GpsActivity extends Activity implements LocationListener{
 		
 		private void openBrowserMap()
 		{
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps/search/Pharmacy/@" + lo + "," + lat + ",15z?hl=no"));
-			startActivity(browserIntent);
+			if(lo!=0.0 && lat!=0.0)
+			{
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps/search/Pharmacy/@" + lo + "," + lat + ",15z?hl=no"));
+				startActivity(browserIntent);
+			}
+			else
+			{
+				 Toast.makeText(getApplicationContext(), "This device does not support location providers. Showing Pharmacies closest to Pilestredet 35", Toast.LENGTH_LONG).show();
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.no/maps/search/Pharmacy/@59.919537,10.735061,15z?hl=no"));
+				startActivity(browserIntent);
+			}
+
 		}
 		
 		@Override

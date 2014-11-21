@@ -54,20 +54,7 @@ public class TreatmentList extends Activity
 	private boolean inOld;
 	
 	private int layout_position; 
-	//treatmentlist: 1
-	//treatment details: 11
-	// treatment rating: 111
-	
-	//old treatmentlist: 2
-	// old treatment detials: 22
-	
-	//diary list: 3
-	//diary add/details: 33
 
-	
-	
-	
-	
 	private Typeface customFont;
 	private TextView titleTV;
 	private ImageButton deleteButton, manageButton, addButton, manageButtonTreatments, addButtonTreatments;
@@ -155,7 +142,7 @@ public class TreatmentList extends Activity
 			dialogBuilder = new AlertDialog.Builder(this);
 			dialogBuilder.setTitle(treatment.getName());
 			
-			dialogBuilder.setPositiveButton(("Edit"), new DialogInterface.OnClickListener()
+			dialogBuilder.setPositiveButton(getString(R.string.edit), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -163,7 +150,7 @@ public class TreatmentList extends Activity
 				}
 			});
 			
-			dialogBuilder.setNegativeButton(("Delete"), new DialogInterface.OnClickListener()
+			dialogBuilder.setNegativeButton(getString(R.string.delete), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -172,7 +159,7 @@ public class TreatmentList extends Activity
 				}
 			});
 			
-			dialogBuilder.setNeutralButton(("End treatment"), new DialogInterface.OnClickListener()
+			dialogBuilder.setNeutralButton(getString(R.string.endtreatment), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -185,15 +172,7 @@ public class TreatmentList extends Activity
 			dialogBuilder = new AlertDialog.Builder(this);
 			dialogBuilder.setTitle(treatment.getName());
 			
-			dialogBuilder.setPositiveButton(("Edit"), new DialogInterface.OnClickListener()
-			{
-				public void onClick(DialogInterface dialog, int which)
-				{
-					loadTreatmentDetails(treatment);
-				}
-			});
-			
-			dialogBuilder.setNegativeButton(("Delete"), new DialogInterface.OnClickListener()
+			dialogBuilder.setNegativeButton(getString(R.string.delete), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -203,7 +182,7 @@ public class TreatmentList extends Activity
 				}
 			});
 			
-			dialogBuilder.setNeutralButton(("Re-open treatment"), new DialogInterface.OnClickListener()
+			dialogBuilder.setNeutralButton(getString(R.string.reopentreatment), new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -222,10 +201,10 @@ public class TreatmentList extends Activity
 	private void deleteDialog(final Treatment treatment)
 	{
 		dialogBuilder = new AlertDialog.Builder(this);
-		dialogBuilder.setTitle("Delete " + treatment.getName());
-		dialogBuilder.setMessage("Are you sure you want to delete this treatment without saving it to your history?");
+		dialogBuilder.setTitle(getString(R.string.delete) + " " + treatment.getName());
+		dialogBuilder.setMessage(R.string.dialogDeleteText);
 		
-		dialogBuilder.setPositiveButton(("Yes"), new DialogInterface.OnClickListener()
+		dialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
@@ -234,7 +213,7 @@ public class TreatmentList extends Activity
 			}
 		});
 		
-		dialogBuilder.setNegativeButton(("Cancel"), new DialogInterface.OnClickListener()
+		dialogBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
@@ -243,11 +222,12 @@ public class TreatmentList extends Activity
 			}
 		});
 		
-		dialogBuilder.setNeutralButton(("Save"), new DialogInterface.OnClickListener()
+		dialogBuilder.setNeutralButton(getString(R.string.save), new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
-				System.out.println("Lagre behandling i historie");
+				makeOld(treatment);
+				loadTreatmentList();
 			}
 		});
 		
@@ -310,7 +290,7 @@ public class TreatmentList extends Activity
 	private void makeOpen(Treatment treatment)
 	{
 		db.makeTreatmentOpen(treatment);
-		Toast openToast = Toast.makeText(getApplicationContext(), "'"+ treatment.getName() + "'" + " was re-opened.", Toast.LENGTH_SHORT);
+		Toast openToast = Toast.makeText(getApplicationContext(), "'"+ treatment.getName() + "'" + " " + getString(R.string.reopened), Toast.LENGTH_SHORT);
 		openToast.show();
 	}
 	
@@ -384,19 +364,19 @@ public class TreatmentList extends Activity
 				    res = res * 10 + ch - '0';
 				}
 				
-				if(selectedTreatment.getExpectedTime().contains("Days"))
+				if(selectedTreatment.getExpectedTime().contains(getString(R.string.days)))
 				{
 					durSpinner.setSelection(0);
 				}
-				else if(selectedTreatment.getExpectedTime().contains("Week"))
+				else if(selectedTreatment.getExpectedTime().contains(getString(R.string.week)))
 				{
 					durSpinner.setSelection(1);
 				}
-				else if(selectedTreatment.getExpectedTime().contains("Month"))
+				else if(selectedTreatment.getExpectedTime().contains(getString(R.string.month)))
 				{
 					durSpinner.setSelection(2);
 				}
-				else if(selectedTreatment.getExpectedTime().contains("Year"))
+				else if(selectedTreatment.getExpectedTime().contains(getString(R.string.year)))
 				{
 					durSpinner.setSelection(3);
 				}
@@ -427,7 +407,7 @@ public class TreatmentList extends Activity
 	{
 		db.rateTreatment(selectedTreatment, (int)ratingBarRate.getRating());
 		makeOld(selectedTreatment);
-		Toast rateToast = Toast.makeText(getApplicationContext(), "'"+ selectedTreatment.getName()+ "'" + " was moved to history", Toast.LENGTH_SHORT);
+		Toast rateToast = Toast.makeText(getApplicationContext(), "'"+ selectedTreatment.getName()+ "'" + " " + getString(R.string.movedToHistory), Toast.LENGTH_SHORT);
 		rateToast.show();
 		
 	}
@@ -446,7 +426,7 @@ public class TreatmentList extends Activity
 		durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
 		
 		titleTV = (TextView)findViewById(R.id.textTitle);
-		titleTV.setText("New treatment");
+		titleTV.setText(getString(R.string.newtreatment));
 		dateTreatmentTV = (TextView)findViewById(R.id.tvDateTreatment);
 		durationTreatmentTV = (TextView)findViewById(R.id.tvDuration);
 		optionalTreatmentTV = (TextView)findViewById(R.id.tvOptional);
@@ -470,10 +450,10 @@ public class TreatmentList extends Activity
 	{
 		dialogBuilder = new AlertDialog.Builder(this);
 		dialogBuilder.setCancelable(false);
-		dialogBuilder.setTitle("Quit?");
-		dialogBuilder.setMessage("You have unsaved changes. Are you sure you want to quit?");
+		dialogBuilder.setTitle(getString(R.string.quit) + "?");
+		dialogBuilder.setMessage(getString(R.string.dialogQuitText));
 		
-		dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		dialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
@@ -482,7 +462,7 @@ public class TreatmentList extends Activity
 			}
 		});
 		
-		dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener()
+		dialogBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which)
 			{
@@ -509,7 +489,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					methodET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -522,7 +502,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(),  getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					nameET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -534,7 +514,7 @@ public class TreatmentList extends Activity
 			}
 			else
 			{
-				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),  getString(R.string.validationfailed) , Toast.LENGTH_SHORT).show();
 			}
 			
 			//************************
@@ -553,22 +533,12 @@ public class TreatmentList extends Activity
 	{
 		if(addTreatmentValidation())
 		{
-			Toast.makeText(getApplicationContext(), nameET.getText().toString() + " added" , Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), nameET.getText().toString() + " " + getString(R.string.added) , Toast.LENGTH_SHORT).show();
 			db.addTreatment(new Treatment(methodET.getText().toString(), nameET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()),0,0));
 			loadTreatmentList();
 		}
 	}
-	
-	private boolean isValidString(String name) 
-	{
-		String NAME_PATTERN = "^[a-zA-Z\\s.]+";
 
-		Pattern pattern = Pattern.compile(NAME_PATTERN);
-		Matcher matcher = pattern.matcher(name);
-		return matcher.matches();
-	}
-	
-	
 	private boolean updateTreatmentValidation()
 	{
      int validatedFields = 0;
@@ -583,7 +553,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(),  getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					methodET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -596,7 +566,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(),  getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					nameET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -608,7 +578,7 @@ public class TreatmentList extends Activity
 			}
 			else
 			{
-				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),  getString(R.string.validationfailed) , Toast.LENGTH_SHORT).show();
 			}
 			
 			//************************
@@ -628,7 +598,7 @@ public class TreatmentList extends Activity
 	{
 		if(updateTreatmentValidation())
 		{
-			Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " updated.", Toast.LENGTH_SHORT);
+			Toast updateToast = Toast.makeText(getApplicationContext(), "'"+ nameET.getText() + "'" + " " + getString(R.string.updated), Toast.LENGTH_SHORT);
 			updateToast.show();
 			Treatment updated = new Treatment(nameET.getText().toString(), methodET.getText().toString(), dateET.getText().toString(), (durationNumberTreatmentET.getText() + " " + durSpinner.getSelectedItem().toString()), 0);
 			db.updateTreatment(treatment, updated);
@@ -891,6 +861,18 @@ public class TreatmentList extends Activity
 				break;
 			case "Night":
 				todSpinner.setSelection(3);
+				break;
+			case "Morgen":
+				todSpinner.setSelection(0);
+				break;
+			case "Formiddag":
+				todSpinner.setSelection(1);
+				break;
+			case "Ettermiddag":
+				todSpinner.setSelection(2);
+				break;
+			case "Kveld":
+				todSpinner.setSelection(3);
 			}
 		}
 		
@@ -947,15 +929,16 @@ public class TreatmentList extends Activity
 		titleET.setText("");
 		textET.setText("");
 		
-		dateET.setHint("Date");
-		titleET.setHint("Title");
-		textET.setHint("Write your note here");
+		dateET.setHint(getString(R.string.hintDate));
+		titleET.setHint(getString(R.string.hintTitle));
+		textET.setHint(getString(R.string.hintNote));
 		ratingBar.setRating(0);
 		addButton = (ImageButton)findViewById(R.id.menuAddButto);
 		addButton.setOnClickListener(onClickListener);
 	}
 	
 	private boolean addNoteValidation()
+
 	{
 	int validatedFields = 0;
 		
@@ -969,7 +952,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					titleET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -982,7 +965,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					textET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -994,7 +977,7 @@ public class TreatmentList extends Activity
 			}
 			else
 			{
-				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), getString(R.string.validationfailed) , Toast.LENGTH_SHORT).show();
 			}
 			
 			//************************
@@ -1015,7 +998,7 @@ public class TreatmentList extends Activity
 	{
 		if(addNoteValidation())
 		{
-			Toast.makeText(getApplicationContext(), titleET.getText().toString() + " added." , Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), titleET.getText().toString() + " " + getString(R.string.added), Toast.LENGTH_SHORT).show();
 			dbDiary.addDiary(new Diary(titleET.getText().toString(),dateET.getText().toString(), textET.getText().toString(), todSpinner.getSelectedItem().toString(), Float.toString(ratingBar.getRating())), selectedTreatment);
   			filldiaryList(selectedTreatment);
 			loadDiaryList();
@@ -1025,7 +1008,7 @@ public class TreatmentList extends Activity
 	
 	private void deleteNote(Diary note)
 	{
-		Toast deleteToast = Toast.makeText(getApplicationContext(), "'"+note.getTitle() + "'" + " deleted.", Toast.LENGTH_SHORT);
+		Toast deleteToast = Toast.makeText(getApplicationContext(), "'"+note.getTitle() + "'" + " " + getString(R.string.deleted), Toast.LENGTH_SHORT);
 		deleteToast.show();
 		dbDiary.deleteNote(note);
 	}
@@ -1045,7 +1028,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					titleET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -1058,7 +1041,7 @@ public class TreatmentList extends Activity
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), "Validation failed", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.validationfailed), Toast.LENGTH_LONG).show();
 					textET.setBackgroundColor(Color.parseColor("#ffa9a9"));
 				}
 			
@@ -1070,7 +1053,7 @@ public class TreatmentList extends Activity
 			}
 			else
 			{
-				Toast.makeText(getApplicationContext(), "Validation failed" , Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), getString(R.string.validationfailed) , Toast.LENGTH_SHORT).show();
 			}
 			
 			//************************
@@ -1085,7 +1068,8 @@ public class TreatmentList extends Activity
 				return false;
 			}
 	}
-	private void updateNote(Diary note)
+	
+private void updateNote(Diary note)
 	{
 		if(updateNoteValidation())
 		{
@@ -1132,7 +1116,7 @@ public class TreatmentList extends Activity
 			
 			if(currentTreatment.getName() == null || currentTreatment.getName().isEmpty())
 			{
-				textMake.setText("(Tom)");
+				textMake.setText("(Empty)");
 			}
 			else
 			{
@@ -1140,7 +1124,7 @@ public class TreatmentList extends Activity
 			}
 			
 			TextView textStarted = (TextView)itemView.findViewById(R.id.textStarted);
-			textStarted.setText("Startet  " + currentTreatment.getStarted());
+			textStarted.setText(getString(R.string.started) + " " + currentTreatment.getStarted());
 			textStarted.setTypeface(customFont);
 			TextView textMethod = (TextView)itemView.findViewById(R.id.textMethod);
 			textMethod.setText(currentTreatment.getMethod());
@@ -1180,7 +1164,7 @@ public class TreatmentList extends Activity
 				
 				if(currentNote.getTitle() == null || currentNote.getTitle().isEmpty())
 				{
-					textMake.setText("(Tom)");
+					textMake.setText("(Empty)");
 				}
 				else
 				{
