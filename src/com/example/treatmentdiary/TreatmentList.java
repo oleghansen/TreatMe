@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -672,7 +673,8 @@ public class TreatmentList extends Activity
 	            	 }
 	             break;
 	             case R.id.menuManageButtonTreatments:
-	            	 //innstillinger
+	            	 Intent prefs = new Intent("com.example.treatmentdiary.PREFS");
+	            	 startActivity(prefs);
 	             break;
 	             case R.id.menuAddButto:
 	            	 if(nyDiary)

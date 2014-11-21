@@ -158,14 +158,14 @@
         <ImageButton
             android:id="@+id/menuDeleteButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:background="@null"
-            android:src="@android:drawable/ic_delete" />
+            android:src="@drawable/btn_check_delete" />
 
         <TextView
             android:id="@+id/textTitle"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="28dp"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Treatment"
