@@ -8,4 +8,9 @@
         android:key="deleteKey">
     </Preference>
 
+     <CheckBoxPreference 
+        android:title="Reminders"
+        android:key="run"
+        android:summary="We'll help you remember to write notes daily"/>
+            
 </PreferenceScreen>

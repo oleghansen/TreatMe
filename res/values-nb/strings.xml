@@ -14,6 +14,8 @@
     <string name="delete">Slett</string>
     <string name="quit">Avslutt</string>
     
+    <string name="today">Du har ikke lagt inn notat for i dag</string>
+    
     <string name="endtreatment">Avslutt behandling</string>
     <string name="reopentreatment">Gjenåpne behandling</string>
     <string name="reopened">ble gjenåpnet.</string>

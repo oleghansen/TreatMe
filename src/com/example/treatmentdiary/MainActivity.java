@@ -3,6 +3,7 @@ package com.example.treatmentdiary;
 
 
 
+import java.util.List;
 import java.util.Random;
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Typeface customFont;
+	private TextView todayText;
 	
 
 	@Override
@@ -66,9 +68,15 @@ public class MainActivity extends Activity {
 		treatmentsButton.setOnClickListener(onClickListener);
 		usedTreatmentsButton.setOnClickListener(onClickListener);
 		findPharmacyButton.setOnClickListener(onClickListener);
+		todayText = (TextView)findViewById(R.id.todayTV);
+		todayText.setVisibility(View.INVISIBLE);
 		getCustomActionBar();
-		 
 		
+		if(!isNoteToday())
+		{
+			todayText.setVisibility(View.VISIBLE);
+			todayText.setTypeface(customFont);
+		}
 	}
 	
 	@Override
@@ -85,7 +93,34 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		if(!isNoteToday())
+		{
+			todayText.setVisibility(View.VISIBLE);
+			todayText.setTypeface(customFont);
+		}
+		else
+		{
+			todayText.setVisibility(View.INVISIBLE);
+		}
 		barBackButton.setVisibility(View.INVISIBLE);
+	}
+	
+	private boolean isNoteToday()
+	{
+		
+		List<Treatment> allTreatments = db.findAllTreatments();
+		for(Treatment item : allTreatments)
+		{
+			if(dbDiary.isToday(item))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return false;
 	}
 	
 	private void getCustomActionBar()
@@ -118,6 +153,7 @@ public class MainActivity extends Activity {
 	            	 	
 	             break;
 	             case R.id.findPharmacyButton:
+	            	 finish();
 	            	 Intent gpsactivity = new Intent("com.example.treatmentdiary.GPSACTIVITY");
 	            	  startActivity(gpsactivity);
 	            	 	

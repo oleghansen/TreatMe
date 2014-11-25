@@ -14,6 +14,8 @@
     <string name="delete">Delete</string>
     <string name="quit">Quit</string>
     
+    <string name="today">You havn`t written a note today</string>
+    
     <string name="endtreatment">End treatment</string>
     <string name="reopentreatment">Re-open treatment</string>
     <string name="reopened">was reopened.</string>

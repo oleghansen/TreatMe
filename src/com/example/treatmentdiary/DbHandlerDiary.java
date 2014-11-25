@@ -3,6 +3,7 @@ package com.example.treatmentdiary;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -140,6 +141,55 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		db.close();
 	}
 	
+	public boolean isToday(Treatment treatment)
+	{
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY  SUBSTR(DATE('NOW'), 6)>(SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)), (SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)) DESC";
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		String now = sdf.format(c.getTime());
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		try
+		{
+			Cursor cursor = db.rawQuery(selectQuery,null);
+			if (cursor.moveToFirst()) 
+			{
+					do{
+						Diary diary = new Diary();
+						diary.setId(Integer.parseInt(cursor.getString(0)));
+						diary.setTreatmentId(Integer.parseInt(cursor.getString(1)));
+						diary.setDate(cursor.getString(2));
+						diary.setTitle(cursor.getString(3));
+						diary.setDescription(cursor.getString(4));
+						diary.setTimeOfDay(cursor.getString(5));
+						diary.setRate(cursor.getString(6));
+						
+						if(diary.getDate().equals(now))
+						{
+							return true;
+						}
+
+					}
+				while (cursor.moveToNext());
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Feil i databaseoppslag");
+			onCreate(db);
+		}
+		finally
+		{
+                                        
+		}
+	
+		db.close();
+		return false;
+	}
 	
 
 }

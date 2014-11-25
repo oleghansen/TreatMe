@@ -3,13 +3,19 @@ package com.example.treatmentdiary;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class GpsActivity extends Activity implements LocationListener{
@@ -17,12 +23,15 @@ public class GpsActivity extends Activity implements LocationListener{
 		Location location;
 		String provider;
 		double lo, lat;
+		private Typeface customFont;
+		private ImageButton barBackButton, barExitButton;
 		WebView webView;
 		@Override
 		protected void onCreate(Bundle savedInstanceState) 
 		{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.webview);
+			customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
 			 
 			webView = (WebView) findViewById(R.id.webView1);
 			webView.getSettings().setJavaScriptEnabled(true);
@@ -47,8 +56,44 @@ public class GpsActivity extends Activity implements LocationListener{
 	                super.onReceivedError(view, errorCode, description, failingUrl);
 	            }
 	        });
+			getCustomActionBar();
 			
 		}
+		
+		private void getCustomActionBar()
+		{
+			getActionBar().setCustomView(R.layout.custom_actionbar);
+			getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+			
+			TextView actionTitle = (TextView)findViewById(R.id.actionBarTitle);
+			actionTitle.setTypeface(customFont);
+			
+			barBackButton = (ImageButton)findViewById(R.id.actionBackButton);
+			barBackButton.setVisibility(View.VISIBLE);
+			barBackButton.setOnClickListener(onClickListener);
+			
+			barExitButton = (ImageButton)findViewById(R.id.actionExitButton);
+			barExitButton.setVisibility(View.VISIBLE);
+			barExitButton.setOnClickListener(onClickListener);
+		}
+		
+		private OnClickListener onClickListener = new OnClickListener() {
+			 @Override
+		     public void onClick(View v) 
+		     {
+		         switch(v.getId()){
+		             case R.id.actionBackButton:
+		            		  finish();
+		             break;
+		             case R.id.actionExitButton:
+		     				setResult(99);
+		     				finish();
+		     		 break;
+
+		         }
+		     }
+		};
+
 		
 		private void openBrowserMap()
 		{

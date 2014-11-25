@@ -2,9 +2,10 @@ package com.example.treatmentdiary;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
-
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -22,6 +23,7 @@ public class Prefs extends PreferenceActivity {
 	private Typeface customFont;
 	private ImageButton barBackButton, barExitButton;
 	Preference deletePref;
+	CheckBoxPreference cbpref;
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,29 @@ public class Prefs extends PreferenceActivity {
 		getCustomActionBar();
 		
 		deletePref = (Preference) findPreference("deleteKey");
+		cbpref = (CheckBoxPreference) findPreference("run");  
 		deletePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 deleteDatabaseDialog();
 				return true;
             }
         });
+		cbpref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
+		{
+			public boolean onPreferenceClick(Preference preference) 
+			{
+				if(cbpref.isChecked())
+				{
+					startService();
+				}
+				else
+				{
+					stopService();
+				}
+				
+		        return true; 
+		    }
+	});
 	}
 	private void getCustomActionBar()
 	{
@@ -57,6 +76,26 @@ public class Prefs extends PreferenceActivity {
 		barExitButton.setVisibility(View.VISIBLE);
 		barExitButton.setOnClickListener(onClickListener);
 	}
+	
+	public void stopService()
+	{
+		if(PeriodicService.alarm!=null)
+		{
+			PeriodicService.stopService();
+		}
+		else
+		{
+			//
+		}
+	}
+	
+	public void startService()
+	{
+			Intent serviceIntent = new Intent("com.example.treatmentdiary.PeriodicService");
+			serviceIntent.setClass(this, PeriodicService.class);
+			startService(serviceIntent);
+	}
+	
 	
 	private void deleteDatabaseDialog()
 	{
