@@ -14,6 +14,9 @@
     <string name="delete">Delete</string>
     <string name="quit">Quit</string>
     
+    <string name="empty">Emtpy list</string>
+    <string name="emptyliststring">Would you like to add a treatment for testing purposes?</string>
+    
     <string name="today">You havn`t written a note today</string>
     
     <string name="endtreatment">End treatment</string>

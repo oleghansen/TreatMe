@@ -153,6 +153,8 @@
             android:id="@+id/menuDeleteButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
             android:background="@null"
             android:src="@drawable/btn_check_delete" />
 
@@ -160,6 +162,7 @@
             android:id="@+id/textTitle"
             android:layout_width="match_parent"
             android:layout_height="28dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Treatment"
@@ -170,8 +173,11 @@
             android:id="@+id/menuAddButtonNewTreatment"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
             android:background="@null"
             android:src="@drawable/btn_check_buttonless_on" />
+
     </LinearLayout>
     
 </RelativeLayout>

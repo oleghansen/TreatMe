@@ -61,7 +61,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public	List<Diary> findDiaryNotes(Treatment treatment){
 		diaryList = new ArrayList<Diary>();
-		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY  SUBSTR(DATE('NOW'), 6)>(SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)), (SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)) DESC";
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY substr("+ KEY_DATE +", 7, 4),substr("+KEY_DATE+", 4, 2), substr("+KEY_DATE+", 1, 2) DESC";
 		System.out.println("Forsøker å finne note med treatmentId" + treatment.getId());
 
 		SQLiteDatabase db = this.getWritableDatabase();

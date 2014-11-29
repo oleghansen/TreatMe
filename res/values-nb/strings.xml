@@ -14,6 +14,9 @@
     <string name="delete">Slett</string>
     <string name="quit">Avslutt</string>
     
+    <string name="empty">Tom liste</string>
+    <string name="emptyliststring">Vil du generere en behandling med tilhørende dagbok for testing av applikasjonen?</string>
+    
     <string name="today">Du har ikke lagt inn notat for i dag</string>
     
     <string name="endtreatment">Avslutt behandling</string>

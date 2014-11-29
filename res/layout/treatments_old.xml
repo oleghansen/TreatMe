@@ -22,11 +22,13 @@
             android:id="@+id/textTitleTreatments"
             android:layout_width="238dp"
             android:layout_height="fill_parent"
-            android:layout_weight="0.85"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="Treatment history"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#ffffff" />
+
     </LinearLayout>
     
     <ListView
