@@ -300,9 +300,15 @@ public class TreatmentList extends Activity
 ;
 				layout_position = 22;
 			}
-			
+			else
+			{
+				layout_position = 11;
+			}
+
 			nyTreatment = false;
 			setContentView(R.layout.treatment_details);
+			deleteButton = (ImageButton)findViewById(R.id.menuDeleteButton);
+			deleteButton.setOnClickListener(onClickListener);
 			dateET = (EditText)findViewById(R.id.etDateTreatment);
 			durationNumberTreatmentET = (EditText)findViewById(R.id.etDurationNumberTreatment);
 			durSpinner = (Spinner)findViewById(R.id.spinnerDuration);
@@ -411,6 +417,8 @@ public class TreatmentList extends Activity
 		layout_position = 11;
 		nyTreatment = true;
 		setContentView(R.layout.treatment_details);
+		deleteButton = (ImageButton)findViewById(R.id.menuDeleteButton);
+		deleteButton.setOnClickListener(onClickListener);
 		/*Date handling*/
 		
 		Calendar c = Calendar.getInstance();
@@ -655,9 +663,33 @@ public class TreatmentList extends Activity
 	            	 loadTreatmentDetails(selectedTreatment);
 	             break;
 	             case R.id.menuDeleteButton:
-	            	 deleteNote(selectedNote);
-	            	 filldiaryList(selectedTreatment);
-	            	 loadDiaryList();
+	            	 if(layout_position == 11 || layout_position == 22)
+	            	 {
+		            	 if(nyTreatment)
+		            	 {
+		            		 loadTreatmentList();
+		            	 }
+		            	 else if (!nyTreatment)
+		            	 {
+		            		 deleteDialog(selectedTreatment);
+		            	 }
+	            	 }
+	            	 else if(layout_position == 33)
+	            	 {
+	            		 if(!nyDiary)
+	            		 {
+			            	 deleteNote(selectedNote);
+			            	 filldiaryList(selectedTreatment);
+			            	 loadDiaryList();
+	            		 }
+	            		 else if(nyDiary)
+	            		 {
+			            	 filldiaryList(selectedTreatment);
+			            	 loadDiaryList();
+	            		 }
+
+	            	 }
+
 	             break;
 	             case R.id.menuAddButtonTreatments:
 	            	 loadAddTreatment();
@@ -1203,7 +1235,25 @@ private void updateNote(Diary note)
 					yr = year;
 					month = monthOfYear;
 					day = dayOfMonth;
-					dateET.setText(day + "-" + (month+1) + "-" + (year));
+					
+					if(day < 10)
+					{
+						dateET.setText("0" + day + "-");
+					}
+					else
+					{
+						dateET.setText(day + "-");
+					}
+					if(month<10)
+					{
+						dateET.append("0" + (month+1) + "-" + (year));
+					}
+					else
+					{
+						dateET.append((month+1) + "-" + (year));
+					}
+						
+					
 					
 				}
 			};

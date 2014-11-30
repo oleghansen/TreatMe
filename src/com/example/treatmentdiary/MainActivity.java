@@ -88,9 +88,17 @@ public class MainActivity extends Activity {
 						
 						Random rn = new Random();
 						int min = 1; int max = 5;
-						for(int i = 1; i < 4; i++)
+						for(int i = 1; i < 30; i++)
 						{
-							dbDiary.addDiary(new Diary("Dag " + i,i + "-1-2014", genArray[rn.nextInt(genArray.length)], "Noon", String.valueOf(rn.nextInt(max-min +1) + min)), hei);
+							if(i<10)
+							{
+								dbDiary.addDiary(new Diary("Dag " + i,"0"+i + "-01-2014", genArray[rn.nextInt(genArray.length)], "Noon", String.valueOf(rn.nextInt(max-min +1) + min)), hei);
+							}
+							else
+							{
+								dbDiary.addDiary(new Diary("Dag " + i,i + "-01-2014", genArray[rn.nextInt(genArray.length)], "Noon", String.valueOf(rn.nextInt(max-min +1) + min)), hei);
+							}
+							
 						}
 					}
 				}

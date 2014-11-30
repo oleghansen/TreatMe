@@ -49,7 +49,7 @@ public class GpsActivity extends Activity implements LocationListener{
 	            public void onReceivedError(WebView view, int errorCode,
 	                String description, String failingUrl) {
 	                view.loadUrl("about:blank");
-	                setContentView(R.layout.activity_main);
+	                finish();
 	                Toast.makeText(getApplicationContext(), "Opening browser..", Toast.LENGTH_SHORT).show();
 	                openBrowserMap();
 	                super.onReceivedError(view, errorCode, description, failingUrl);
