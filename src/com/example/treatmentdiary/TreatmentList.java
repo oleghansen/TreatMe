@@ -11,13 +11,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -41,13 +38,12 @@ public class TreatmentList extends Activity
 {
 	private AlertDialog.Builder dialogBuilder;
 	private ListView list, listDiary;
-	private List<Treatment> treatments, treatmentsOld;
-	private List<Diary> notes, notesOld;
+	private List<Treatment> treatments;
+	private List<Diary> notes;
 	private DbHandlerTreatments db;
 	private DbHandlerDiary dbDiary;
 	private Treatment selectedTreatment;
 	private Diary selectedNote;
-	private MenuItem item, item2;
 	static final int dialog_id=1;
 	private int yr, day, month;
 	private boolean inOld;
@@ -60,10 +56,10 @@ public class TreatmentList extends Activity
 	private Button buttonRate;
 	
 	/* Note details */
-	private TextView tv, todTv, dateTv, dateTreatmentTV, durationTreatmentTV, optionalTreatmentTV, textRateHelp, textRateName;
-	private EditText dateET, titleET, textET, dateTreatmentET, durationNumberTreatmentET, nameET, methodET;
+	private TextView todTv, dateTv, dateTreatmentTV, durationTreatmentTV, optionalTreatmentTV, textRateHelp, textRateName;
+	private EditText dateET, titleET, textET, durationNumberTreatmentET, nameET, methodET;
 	private Spinner todSpinner, durSpinner;
-	private RatingBar ratingBar, ratingBarTreatments, ratingBarRate;
+	private RatingBar ratingBar, ratingBarRate;
 	private ImageButton barBackButton, barExitButton;
 	
 	private boolean nyDiary, nyTreatment, update;
@@ -74,7 +70,6 @@ public class TreatmentList extends Activity
 		super.onCreate(savedInstanceState);
 		customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		db = new DbHandlerTreatments(this);
 		dbDiary = new DbHandlerDiary(this);
 		
@@ -297,12 +292,12 @@ public class TreatmentList extends Activity
 	{
 			if(layout_position == 1)
 			{
-				System.out.println("setter til 11");
+
 				layout_position = 11;
 			}
 			else if(layout_position == 2)
 			{
-				System.out.println("setter til 22");
+;
 				layout_position = 22;
 			}
 			
@@ -414,9 +409,16 @@ public class TreatmentList extends Activity
 	private void loadAddTreatment()
 	{
 		layout_position = 11;
-		
 		nyTreatment = true;
 		setContentView(R.layout.treatment_details);
+		/*Date handling*/
+		
+		Calendar c = Calendar.getInstance();
+		yr = c.get(Calendar.HOUR_OF_DAY);
+		month = c.get(Calendar.MONTH);
+		day = c.get(Calendar.DAY_OF_MONTH);
+		
+		/* -------------------------------*/
 		addButton = (ImageButton)findViewById(R.id.menuAddButtonNewTreatment);
 		addButton.setOnClickListener(onClickListener);
 		dateET = (EditText)findViewById(R.id.etDateTreatment);
@@ -435,6 +437,10 @@ public class TreatmentList extends Activity
 		ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.duration, android.R.layout.simple_spinner_item);
 		durSpinner.setAdapter(adapter);
 		durSpinner.setPopupBackgroundResource(R.drawable.spinner);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		String now = sdf.format(c.getTime());
+		
+		dateET.setText(now);
 		
 		titleTV.setTypeface(customFont);
 		dateTreatmentTV.setTypeface(customFont);
@@ -848,7 +854,7 @@ public class TreatmentList extends Activity
 		}
 		else
 		{
-			switch(note.getTimeOfDay()) // LAG EN SMIDIGERE MÅTE Å GJØRE DETTE PÅ. GETSTRING(R.ID.. osv? )
+			switch(note.getTimeOfDay())
 			{
 			case "Morning":
 				todSpinner.setSelection(0);
@@ -1182,7 +1188,6 @@ private void updateNote(Diary note)
 		switch(id)
 		{
 		case dialog_id:
-			System.out.println(day + " " + month + " " + yr);
 			return new DatePickerDialog(this,mDateSetListener, 2014, month, day);
 		}
 		return null;

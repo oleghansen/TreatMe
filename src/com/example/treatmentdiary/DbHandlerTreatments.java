@@ -1,19 +1,13 @@
 package com.example.treatmentdiary;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import android.content.ContentResolver;
+import java.util.ArrayList;
+import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.provider.Contacts;
 import android.util.Log;
 
 public class DbHandlerTreatments extends SQLiteOpenHelper 

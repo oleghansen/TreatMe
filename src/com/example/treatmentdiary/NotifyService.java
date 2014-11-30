@@ -1,9 +1,7 @@
 package com.example.treatmentdiary;
 
 
-import java.util.Calendar;
 import java.util.List;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

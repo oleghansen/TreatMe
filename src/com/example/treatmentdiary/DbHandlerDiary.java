@@ -1,20 +1,15 @@
 package com.example.treatmentdiary;
 
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.provider.Contacts;
 import android.util.Log;
 
 public class DbHandlerDiary extends SQLiteOpenHelper 
@@ -61,8 +56,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public	List<Diary> findDiaryNotes(Treatment treatment){
 		diaryList = new ArrayList<Diary>();
-		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY substr("+ KEY_DATE +", 7, 4),substr("+KEY_DATE+", 4, 2), substr("+KEY_DATE+", 1, 2) DESC";
-		System.out.println("Forsøker å finne note med treatmentId" + treatment.getId());
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " order by substr(Date, 7, 4),substr(Date, 4, 2), substr(Date, 1, 2) DESC";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		
@@ -88,7 +82,6 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Feil i databaseoppslag");
 			onCreate(db);
 		}
 		finally
@@ -118,7 +111,6 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		values.put(KEY_TIMEOFDAY, diary.getTimeOfDay());
 		values.put(KEY_RATE, diary.getRate());
 		db.insert(TABLE_DIARY, null, values);
-		System.out.println("Legger inn note med TreatmentId" + treatment.getId());
 		db.close();
 	}
 	
@@ -143,7 +135,7 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 	
 	public boolean isToday(Treatment treatment)
 	{
-		String selectQuery = "SELECT * FROM " + TABLE_DIARY + " WHERE TreatmentId = " + treatment.getId() + " ORDER BY  SUBSTR(DATE('NOW'), 6)>(SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)), (SUBSTR("+KEY_DATE+", 4, 3) || SUBSTR ("+KEY_DATE+", 1, 2)) DESC";
+		String selectQuery = "SELECT * FROM " + TABLE_DIARY;
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		String now = sdf.format(c.getTime());
@@ -179,7 +171,6 @@ public class DbHandlerDiary extends SQLiteOpenHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Feil i databaseoppslag");
 			onCreate(db);
 		}
 		finally

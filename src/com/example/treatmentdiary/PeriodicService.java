@@ -1,9 +1,7 @@
 package com.example.treatmentdiary;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
+import java.util.Calendar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -17,6 +15,7 @@ public class PeriodicService extends Service{
 	public static AlarmManager alarm;
 	public static PendingIntent pintent;
 	public static final String MY_SERVICE = "com.example.treatmentdiary.PeriodicService";
+	public static final int hour = 21, minute = 0, second=0;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags,	int startId)	{	
@@ -25,9 +24,9 @@ public class PeriodicService extends Service{
 		 	 pintent =	PendingIntent.getService(this,	0,	i,	0);	
 		 	 alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);	
 		 	 calendar.setTimeInMillis(System.currentTimeMillis());
-		 	 calendar.set(Calendar.HOUR_OF_DAY, 21);
-		 	 calendar.set(Calendar.MINUTE,0);
-		 	 calendar.set(Calendar.SECOND, 0);
+		 	 calendar.set(Calendar.HOUR_OF_DAY, hour);
+		 	 calendar.set(Calendar.MINUTE,minute);
+		 	 calendar.set(Calendar.SECOND, second);
 
 			 alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24, pintent);
 

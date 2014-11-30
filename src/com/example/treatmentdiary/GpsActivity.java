@@ -34,7 +34,6 @@ public class GpsActivity extends Activity implements LocationListener{
 			customFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTW1G-Lt.otf");
 			 
 			webView = (WebView) findViewById(R.id.webView1);
-			webView.getSettings().setJavaScriptEnabled(true);
 			webView.getSettings().setDomStorageEnabled(true);
 			
 			
@@ -126,7 +125,7 @@ public class GpsActivity extends Activity implements LocationListener{
 			if (location != null){
 			lo=location.getLongitude();
 			lat=location.getLatitude();
-			String latlongtekst="Longitude: " + lo + "\n" + "Latitude:" + lat;
+			String latlongtekst="Plassering motatt! Longitude: " + lo + "\n" + "Latitude:" + lat;
 			System.out.println(latlongtekst);
 			}
 		}
